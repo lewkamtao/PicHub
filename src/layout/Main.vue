@@ -25,7 +25,7 @@ import Header from './Header.vue'
     height: 100vh;
     z-index: 999;
     box-shadow: 0 1px 6px 0 rgb(32 33 36 / 28%);
-    background: #000;
+    background: rgb(23, 64, 82);
   }
 
   .main {
