@@ -50,7 +50,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+
     font-size: 40px;
     padding: 30px;
     box-sizing: border-box;
@@ -66,7 +66,6 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba($color: #000, $alpha: 0);
       color: #fff;
       font-size: 16px;
       cursor: pointer;
@@ -74,10 +73,10 @@ onMounted(() => {
       letter-spacing: 3px;
     }
     .item:hover {
-      background: rgba($color: #fff, $alpha: 0.1);
+      background: var(--background-hover-2);
     }
     .item:active {
-      background: rgba($color: #fff, $alpha: 0.2);
+      background: var(--background-hover-2);
     }
     .title {
       position: relative;
