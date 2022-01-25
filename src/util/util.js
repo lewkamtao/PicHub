@@ -98,7 +98,32 @@ async function PUTObject(filePath, objectData) {
     })
   })
 }
-
+/**
+ * 新建文件夹
+ */
+async function PUTFolder(filePath) {
+  // 初始化实例
+  return new Promise((resolve) => {
+    axios.get('https://cos.api.tngeek.com/GetFederationToken').then((res) => {
+      axios
+        .put(
+          'https://tngeek-mall-1255310647.cos.ap-guangzhou.myqcloud.com/' +
+            filePath,
+          {
+            headers: {
+              Authorization: res.data.data.Credentials.Token,
+            },
+          }
+        )
+        .then((res) => {
+          resolve(
+            'https://tngeek-mall-1255310647.cos.ap-guangzhou.myqcloud.com' +
+              filePath
+          )
+        })
+    })
+  })
+}
 /**
  * 上传一个文件
  */
@@ -161,4 +186,5 @@ export default {
   GETObjects,
   getDate,
   PUTPObjectByPrivate,
+  PUTFolder,
 }

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import SideBar from './SideBar.vue'
 import Header from './Header.vue'
+import { useMessage } from 'naive-ui'
+window.$message = useMessage()
 </script>
 
 <template>
   <div class="wrapper">
-    <SideBar class="SideBar" />
-    <div class="main">
+    <div class="main"> 
       <Header class="Header" />
       <router-view v-slot="{ Component }">
         <component :is="Component" />
@@ -19,27 +19,15 @@ import Header from './Header.vue'
 .wrapper {
   margin: 0 auto;
   display: flex;
-  .SideBar {
-    position: fixed;
-    width: 180px;
-    height: 100vh;
-    z-index: 999;
-    box-shadow: var(--box-shadow);
-    background: var(--background-theme);
-  }
-
   .main {
-    width: calc(100vw - 180px);
-    margin-left: 180px;
+    width: 100vw;
     padding-top: 50px;
     .Header {
       position: fixed;
       background: var(--background);
       color: var(--text-color);
-
-      width: calc(100vw - 180px);
+      width: 100vw;
       top: 0px;
-      left: 180px;
       height: 50px;
       box-shadow: var(--box-shadow);
       z-index: 99;

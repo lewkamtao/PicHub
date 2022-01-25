@@ -1,11 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-
 import Main from '../layout/Main.vue'
-
-import Home from '../views/Home.vue'
-import About from '../views/About.vue'
-import Photo from '../views/Photo.vue'
-import Setting from '../views/Setting.vue'
+import Index from '../views/Index.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,37 +10,12 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: '/',
-        name: 'Home',
-        component: Home,
+        name: 'Index',
+        component: Index,
         meta: {
           title: '主页',
         },
       },
-      {
-        path: '/Photo',
-        name: 'Photo',
-        component: Photo,
-        meta: {
-          title: '相册',
-        },
-      },
-      {
-        path: '/Setting',
-        name: 'Setting',
-        component: Setting,
-        meta: {
-          title: '设置',
-        },
-      },
-      {
-        path: '/About',
-        name: 'About',
-        component: About,
-        meta: {
-          title: '关于',
-        },
-      },
-     
     ],
   },
 ]
