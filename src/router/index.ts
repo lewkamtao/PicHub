@@ -1,22 +1,12 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import Main from '../layout/Main.vue'
-import Index from '../views/Index.vue'
+import Index from '../views/index.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Main',
-    component: Main,
-    children: [
-      {
-        path: '/',
-        name: 'Index',
-        component: Index,
-        meta: {
-          title: '主页',
-        },
-      },
-    ],
+    name: 'Index', 
+    component: Index,
+    meta: {},
   },
 ]
 const router = createRouter({

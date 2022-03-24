@@ -6,12 +6,3 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
-declare interface Window {
-  $message: any
-}
-
-declare module 'vxe-table/default' {
-  interface Vue {
-    default: any
-  }
-}
