@@ -32,19 +32,20 @@
         font-size: 14px;
         border-radius: 7px;
         box-sizing: border-box;
+        border: 1px rgb(230, 230, 230) solid;
         margin-bottom: 10px;
     }
     .alert-danger {
-        background-color: #ffdbdb;
-        border-color: #a7342d;
+        background-color: #fceded;
+        color: rgb(141, 47, 47);
     }
     .alert-success {
-        background-color: rgb(236, 255, 242);
-        border-color: #9eff95;
+        background-color: rgb(245, 253, 248);
+        color: rgb(52, 71, 46);
     }
     .alert-warning {
-        background-color: rgb(252, 241, 202);
-        border-color: #ffe868;
+        background-color: rgb(255, 253, 247);
+        color: rgb(206, 131, 69);
     }
     .icon {
         width: 20px;
@@ -60,6 +61,33 @@
         opacity: 0;
         margin-top: -60px;
     }
+}
+
+.form-item {
+    width: 100%;
+    margin-bottom: 20px;
+    label {
+        display: block;
+        width: 100%;
+        margin: 0px 0px 5px 10px;
+        color: var(--text-color-2);
+    }
+}
+
+input,
+select {
+    width: 100%;
+    height: 45px;
+    border-radius: 12px;
+    padding: 5px 10px;
+    border: 1px solid var(--border-color);
+    font-size: 14px;
+    line-height: 24px;
+    box-sizing: border-box;
+}
+
+select:not(:valid) {
+    color: #999;
 }
 
 .button {

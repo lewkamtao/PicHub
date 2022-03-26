@@ -84,7 +84,7 @@ function GetFileSize(size) {
 function CopyText() {
   var clipboard = new Clipboard('.copy-btn')
   clipboard.on('success', (e) => {
-    // 复制成功消息通知 
+    // 复制成功消息通知
     Alert({
       type: 'success',
       text: '复制成功！',
@@ -100,6 +100,30 @@ function CopyText() {
     clipboard.destroy()
   })
 }
+
+function FormatZhByMessage(text) {
+  switch (true) {
+    case text == 'Bad credentials': {
+      return 'access token 错误'
+    }
+    case text.indexOf("wasn't supplied") >= 0: {
+      return '请勿重复上传相同内容'
+    }
+
+    case text == 'Bad credentials': {
+      return '未知错误'
+    }
+    case text == 'Bad credentials': {
+      return '未知错误'
+    }
+    case text == 'Bad credentials': {
+      return '未知错误'
+    }
+    default:
+      return '未知错误'
+  }
+}
+
 export {
   GetBeautifyTime,
   GetFileExt,
@@ -107,4 +131,5 @@ export {
   GetDate,
   GetFileSize,
   CopyText,
+  FormatZhByMessage,
 }

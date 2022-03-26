@@ -1,19 +1,30 @@
 <script setup lang="ts">
 import { Alert } from '../util/alert'
 import { compressImage } from '../util/upImage'
+import ImageModal from './ImageModal.vue'
+import FolderModal from './FolderModal.vue'
 
 import axios from '../axios/http'
-import { onMounted, ref } from 'vue'
-import { GithubConfig } from '../model/github_config.model'
+import { onMounted, ref, watch } from 'vue'
 
 import { useRoute } from 'vue-router'
+import { GithubConfig } from '../model/github_config.model'
 const route = useRoute()
 
-let folders = ref([] as any)
+watch(
+  () => route.query,
+  (n: any) => {
+    isOpenImageModal.value = false
+  }
+)
 
 let github_config: GithubConfig = JSON.parse(
   localStorage.getItem('github_config') as any
 )
+
+let folders = ref([] as any)
+let isOpenImageModal = ref(false)
+let isOpenFolderModal = ref(false)
 
 onMounted(() => {
   if (github_config?.repoId) {
@@ -32,61 +43,28 @@ const GetFolders = () => {
       folders.value = res.data.filter((e) => e.type == 'dir')
     })
 }
-const AddImage = async (e) => {
-  var file = e.target.files[0]
-  axios
-    .put({
-      url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${route.query.folder}/${file.name}
-`,
-      data: {
-        message: 'upload a image by pichub',
-        content: (await compressImage(e.target.files[0], 'mozJPEG')).replace(
-          'data:image/jpeg;base64,',
-          ''
-        ),
-      },
-    })
-    .then((res: any) => {
-      Alert({
-        type: 'success',
-        text: '创建成功！',
-      })
-      GetFolders()
-    })
-
-  Alert({
-    type: 'success',
-    text: 'sdaad',
-  })
-}
-const AddForder = (forderName) => {
-  axios
-    .put({
-      url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${forderName}/init
-`,
-      data: {
-        message: 'feat:add a forder',
-        content: '5q2k5paH5Lu255So5LqO5Yib5bu65paH5Lu25aS5',
-      },
-    })
-    .then((res: any) => {
-      Alert({
-        type: 'success',
-        text: '创建成功！',
-      })
-      GetFolders()
-    })
-}
-const SettingFn = () => {
-  axios
-    .get({
-      url: `/repositories/433386403/contents/`,
-    })
-    .then((res: any) => {
-      if (res.code == 200) {
-      }
-    })
-}
+// const AddImage = async (e) => {
+//   var file = e.target.files[0]
+//   axios
+//     .put({
+//       url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${route.query.folder}/${file.name}
+// `,
+//       data: {
+//         message: 'upload a image by pichub',
+//         content: (await compressImage(e.target.files[0], 'mozJPEG')).replace(
+//           'data:image/jpeg;base64,',
+//           ''
+//         ),
+//       },
+//     })
+//     .then((res: any) => {
+//       Alert({
+//         type: 'success',
+//         text: '创建成功！',
+//       })
+//       GetFolders()
+//     })
+// }
 </script>
 
 <template>
@@ -99,33 +77,48 @@ const SettingFn = () => {
       </div>
       <!-- 文件夹列表 -->
       <div class="folder">
-        <a v-if="folders.length != 0" :href="`/#/?folder=lately`" class="item"
-          >最近上传</a
-        >
         <a
           v-for="(item, index) in folders"
           :key="index"
           class="item"
+          :class="{ active: route.query.folder == item.name }"
           :href="`/#/?folder=${item.name}`"
         >
           {{ item.name }}
+          <span class="status-point"></span>
         </a>
 
         <div class="item">
           <span v-if="folders.length != 0">{{ folders.length }} folders</span>
-          <span v-if="folders.length == 0">暂无文件夹</span>
+          <span v-if="github_config?.owner && folders.length == 0"
+            >暂无文件夹</span
+          >
+          <span v-if="!github_config?.owner">未授权</span>
         </div>
       </div>
 
       <!-- 操作栏 -->
+      <folder-modal
+        @close="isOpenFolderModal = false"
+        @updateFolderList="GetFolders()"
+        :isOpen="isOpenFolderModal"
+      ></folder-modal>
       <div class="handle-box">
-        <label class="button">
-          <input v-show="false" type="file" @change="AddImage" /> 上传图片
-        </label>
-        <div @click="AddForder('新2')" class="button">创建文件夹</div>
+        <!-- 创建文件夹 -->
+
+        <div @click="isOpenImageModal = !isOpenImageModal" class="button">
+          上传图片
+        </div>
+        <div @click="isOpenImageModal = true" class="button">历史上传</div>
+        <div @click="isOpenFolderModal = !isOpenFolderModal" class="button">
+          创建文件夹
+        </div>
+
         <a href="/#/setting" class="button">设置</a>
       </div>
     </div>
+    <!-- 上传图片 -->
+    <image-modal :isOpen="isOpenImageModal"></image-modal>
   </div>
 </template>
 <style>
@@ -152,6 +145,7 @@ const SettingFn = () => {
   box-sizing: border-box;
   height: 100vh;
   overflow-y: scroll;
+  z-index: 99;
   .header {
     position: fixed;
     left: -1px;
@@ -188,17 +182,17 @@ const SettingFn = () => {
   }
   .folder {
     margin-top: 70px;
-    padding-bottom: calc(45px * 3 + 30px);
+    padding-bottom: calc(45px * 4 + 38px);
     background: var(--background);
     min-height: calc(100vh - 400px);
     .item {
       position: relative;
-      display: block;
+      display: flex;
+      align-items: center;
       height: 50px;
       line-height: 50px;
       box-sizing: border-box;
-      padding-left: 20px;
-      padding-right: 20px;
+      padding: 0px 20px;
       width: 200px;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -207,14 +201,28 @@ const SettingFn = () => {
       color: var(--text-color-2);
       cursor: pointer;
       border-bottom: 1px var(--border-color) solid;
+      .status-point {
+        width: 8px;
+        height: 8px;
+        margin-left: 10px;
+        border-radius: 8px;
+        display: inline-block;
+        background: #27c24c;
+        transition: opacity 0.25s;
+        opacity: 0;
+      }
+    }
+    .active {
+      .status-point {
+        opacity: 1;
+      }
     }
     .item:hover {
       color: var(--text-color);
       background: var(--hover-bg-color);
     }
     .item:last-child {
-      text-align: center;
-      padding-left: 0px;
+      justify-content: center;
       opacity: 0.5;
       font-size: 12px;
     }
@@ -225,7 +233,7 @@ const SettingFn = () => {
   }
   .handle-box {
     width: 200px;
-    height: calc(45px * 3 + 30px);
+    height: calc(45px * 4 + 38px);
     position: fixed;
     left: -1px;
     bottom: 0px;
@@ -233,6 +241,7 @@ const SettingFn = () => {
     border-top: 1px var(--border-color) solid;
     padding: 7px;
     box-sizing: border-box;
+    z-index: 99;
   }
 }
 </style>

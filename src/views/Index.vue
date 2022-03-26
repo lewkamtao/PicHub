@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Alert } from '../util/alert'
 import { GetFileSize, CopyText } from '../util/util'
+import { GithubConfig } from '../model/github_config.model'
 
 import axios from '../axios/http'
 import { onMounted, watch, ref } from 'vue'
@@ -15,27 +16,31 @@ watch(
 )
 
 let images = ref([] as any)
+let loading = ref(false)
 
 onMounted(() => {
   GetImage(route.query.folder)
 })
 
+let github_config: GithubConfig = JSON.parse(
+  localStorage.getItem('github_config') as any
+)
+
 const GetImage = (folderPath) => {
+  loading.value = true
   axios
     .get({
-      url: `/repositories/474355047/contents/${
+      url: `/repositories/${github_config.repoId}/contents/${
         folderPath || ''
       }?t=${new Date().getTime()}`,
     })
     .then((res: any) => {
-      // res.forEach((e) => {
-      //   if (e.download_url) {
-      //     e.url = e.download_url.replace(
-      //       'https://raw.githubusercontent.com',
-      //       `https://cdn.jsdelivr.net/gh/${config.owner}/${config.selectedRepos}@${config.selectedBranch}/${content.path}`
-      //     )
-      //   }
-      // })
+      loading.value = false
+      res.data.forEach((e) => {
+        if (e.download_url) {
+          e.download_url = `https://cdn.jsdelivr.net/gh/${github_config.owner}/${github_config.repoPath}@master/${folderPath}/${e.name}`
+        }
+      })
 
       function isAssetTypeAnImage(name) {
         // 获取最后一个.的位置
@@ -89,8 +94,13 @@ const FormatWImageInfo = (image) => {
 
 <template>
   <!-- 图片列表 -->
-  <div class="main">
-    <div class="list">
+  <div class="main" :class="{ loading: loading }">
+    <div v-show="images.length == 0" class="not-found">
+      <div class="title">无图片</div>
+      <div class="message">你可以在左侧栏底部上传图片。</div>
+    </div>
+
+    <div v-show="images.length > 0" class="list">
       <div v-for="(item, index) in images" :key="index" class="item">
         <div class="del"></div>
         <a
@@ -115,12 +125,6 @@ const FormatWImageInfo = (image) => {
               v-bind:data-clipboard-text="GetCdnText(item.url)"
               @click="CopyText()"
               >cdn</span
-            > 
-            <span
-              class="copy-btn"
-              v-bind:data-clipboard-text="GetHtmlText(item.url)"
-              @click="CopyText()"
-              >html</span
             >
           </div>
         </div>
@@ -147,6 +151,28 @@ const FormatWImageInfo = (image) => {
 </style>
 
 <style lang="scss" scoped>
+.main::after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  content: 'Loading...';
+  font-size: 18px;
+  border-radius: 14px;
+  background-color: var(--background);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.25s ease;
+}
+.loading::after {
+  opacity: 0.7;
+  z-index: 1;
+}
 .main {
   position: relative;
   width: calc(100vw - 200px);
@@ -295,6 +321,22 @@ const FormatWImageInfo = (image) => {
     color: var(--text-color-2);
     border-top: 1px var(--border-color) solid;
     background: var(--background);
+  }
+  .not-found {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-color-2);
+    text-align: center;
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .message {
+      font-size: 16px;
+    }
   }
 }
 </style>
