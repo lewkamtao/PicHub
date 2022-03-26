@@ -1,11 +1,18 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import Index from '../views/index.vue'
+import Index from '../views/Index.vue'
+import Setting from '../views/Setting.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Index', 
+    name: 'Index',
     component: Index,
+    meta: {},
+  },
+  {
+    path: '/setting',
+    name: 'Setting',
+    component: Setting,
     meta: {},
   },
 ]

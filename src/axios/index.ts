@@ -15,12 +15,13 @@ class xwlRequest {
         let token = localStorage.getItem('token')
         if (token) {
           config.headers = {
-            Authorization: `${token}`,
+            Authorization: `token ${token}`,
           }
         }
         return config
       },
       (error) => {
+        console.log(error)
         //请求失败的拦截
         return Promise.reject(error)
       }
@@ -29,14 +30,7 @@ class xwlRequest {
       //实例中的响应拦截器
       (response: AxiosResponse) => {
         //响应成功的拦截
-        var res: any = response.data
-        if (res.code != 200) {
-          if (res.code == 401) {
-            router.push('/Login')
-          }
-          window.$message.error(res.tips)
-        }
-        return response.data
+        return response
       },
       (error) => {
         //响应失败的拦截

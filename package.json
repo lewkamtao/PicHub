@@ -9,7 +9,9 @@
         "lint:fix": "eslint src --fix --ext .ts,.tsx"
     },
     "dependencies": {
+        "@yireen/squoosh-browser": "^1.0.7",
         "axios": "^0.22.0",
+        "clipboard": "2.0.4",
         "moment": "^2.29.1",
         "vue": "^3.2.16",
         "vue-router": "4.0.8"

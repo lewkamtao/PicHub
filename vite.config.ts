@@ -8,11 +8,14 @@ export default defineConfig({
     proxy: {
       // with options
       '/api': {
-        target: 'https://api.tngeek.com',
-        // target: 'http://localhost:3098',
+        target: 'https://api.github.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },
+  optimizeDeps: {
+    exclude: ['@yireen/squoosh-browser'],
+  },
 })
+ 

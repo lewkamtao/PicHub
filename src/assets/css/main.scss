@@ -1,14 +1,110 @@
-html {
-    color: var(--text-color);
-    user-select: none;
-}
-
 ::-webkit-scrollbar {
     display: none;
     /* Chrome Safari */
 }
 
-.p-button {
-    box-shadow: 0 1px 6px 0 rgb(32 33 36 / 28%);
-    padding: 5px 10px;
+#alert-box {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 99;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 20px;
+    transition: all 0.1s;
+    .alert {
+        width: auto;
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: flex-start;
+        height: 40px;
+        line-height: 40px;
+        padding: 15px 25px;
+        transition: all 0.2s;
+        opacity: 0;
+        margin-top: 0px;
+        transform: translateY(-5px);
+        white-space: nowrap;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.05);
+        font-size: 14px;
+        border-radius: 7px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+    .alert-danger {
+        background-color: #ffdbdb;
+        border-color: #a7342d;
+    }
+    .alert-success {
+        background-color: rgb(236, 255, 242);
+        border-color: #9eff95;
+    }
+    .alert-warning {
+        background-color: rgb(252, 241, 202);
+        border-color: #ffe868;
+    }
+    .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+    .alert-show {
+        opacity: 1;
+        transform: translateY(0px);
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .alert-hidden {
+        opacity: 0;
+        margin-top: -60px;
+    }
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 45px;
+    background: var(--background);
+    margin-bottom: 7px;
+    border-radius: 12px;
+    padding-left: 30px;
+    box-sizing: border-box;
+    transition: all 0.1s;
+    border: 1px var(--border-color) solid;
+    cursor: pointer;
+    color: var(--text-color-2);
+}
+
+.button-danger {
+    background-color: #fde7e7;
+    border-color: #fdd2d0;
+}
+
+.button-success {
+    background-color: rgb(236, 255, 242);
+    border-color: #9eff95;
+}
+
+.button-warning {
+    background-color: rgb(252, 241, 202);
+    border-color: #ffe868;
+}
+
+.button-center {
+    justify-content: center;
+    padding-left: 0px;
+}
+
+.button:hover {
+    color: var(--text-color);
+    background: var(--hover-bg-color);
+    border: 1px var(--hover-border-color) solid;
+}
+
+.button-danger:hover {
+    background-color: #fad7d7;
+    border-color: #faafab;
 }
