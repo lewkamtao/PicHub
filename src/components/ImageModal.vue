@@ -6,7 +6,9 @@ const props = defineProps({ isOpen: Boolean })
 </script>
 
 <template>
-  <div class="image-modal" :class="{ isOpen: props.isOpen }"></div>
+  <div class="image-modal" :class="{ isOpen: props.isOpen }">
+    <div class="title">上传图片</div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -16,13 +18,18 @@ const props = defineProps({ isOpen: Boolean })
   width: 500px;
   min-height: 100vh;
   background: var(--background);
-  box-shadow: 220px 0px 220px rgba($color: #000, $alpha: 0.1);
+  border-right: 1px var(--border-color) solid;
+  box-sizing: border-box;
   z-index: 9;
-  opacity: 0;
   transition: all 0.25s;
+  padding: 20px;
+  box-sizing: border-box;
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+  }
 }
 .isOpen {
   left: 200px;
-  opacity: 1;
 }
 </style>

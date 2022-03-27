@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Alert } from '../util/alert'
+import LewButton from '../components/base/LewButton.vue'
 import { GetFileSize, CopyText } from '../util/util'
 import { GithubConfig } from '../model/github_config.model'
 
@@ -12,7 +13,6 @@ onMounted(() => {
   }
   if (!!localStorage.getItem('token')) {
     token.value = localStorage.getItem('token')
-
     GetUser()
   }
 })
@@ -21,7 +21,12 @@ const repos = ref([] as any)
 let form = ref({} as GithubConfig)
 let token = ref('' as any)
 
+let loading_1 = ref(false)
+let loading_2 = ref(false)
+let loading_3 = ref(false)
+
 const GetUser = () => {
+  loading_1.value = true
   axios
     .get({
       url: `/user`,
@@ -33,11 +38,13 @@ const GetUser = () => {
       localStorage.setItem('github_config', JSON.stringify(form.value))
       GetRepos()
     })
-} 
+    .catch(() => {
+      loading_1.value = false
+    })
+}
 
 const SetToken = () => {
   localStorage.setItem('token', token.value)
-
   GetUser()
 }
 
@@ -48,10 +55,12 @@ const GetRepos = () => {
     })
     .then((res: any) => {
       repos.value = res.data
+      loading_1.value = false
     })
 }
 
 const Save = () => {
+  loading_2.value = true
   if (!form.value.repoId) {
     Alert({
       type: 'warning',
@@ -61,11 +70,13 @@ const Save = () => {
   }
   form.value.repoPath = repos.value.find((e) => form.value.repoId == e.id).name
   localStorage.setItem('github_config', JSON.stringify(form.value))
-  Alert({
-    type: 'success',
-    text: '保存成功！',
-  })
+
   setTimeout(() => {
+    Alert({
+      type: 'success',
+      text: '保存成功！',
+    })
+    loading_2.value = false
     location.reload()
   }, 500)
 }
@@ -73,11 +84,13 @@ const Save = () => {
 const Exit = () => {
   localStorage.removeItem('token')
   localStorage.removeItem('github_config')
+  loading_3.value = true
   Alert({
     type: 'success',
     text: '退出成功',
   })
   setTimeout(() => {
+    loading_3.value = false
     location.reload()
   }, 500)
 }
@@ -100,27 +113,35 @@ const Exit = () => {
           </option>
         </select>
       </div>
-      <div
+
+      <lew-button
+        type="primary"
         v-show="repos.length == 0"
         @click="SetToken()"
-        class="form-item button button-center"
+        :center="true"
+        :loading="loading_1"
       >
         确定
-      </div>
-      <div
+      </lew-button>
+
+      <lew-button
+        type="primary"
         v-show="repos.length > 0"
         @click="Save"
-        class="form-item button button-center"
+        :center="true"
+        :loading="loading_2"
       >
         保存配置
-      </div>
-      <div
+      </lew-button>
+      <lew-button
+        type="danger"
         v-show="repos.length > 0"
         @click="Exit()"
-        class="item button button-center button-danger"
+        :center="true"
+        :loading="loading_3"
       >
         退出登录
-      </div>
+      </lew-button>
     </form>
   </div>
 </template>

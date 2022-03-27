@@ -3,20 +3,16 @@ import { Alert } from '../util/alert'
 import { compressImage } from '../util/upImage'
 import ImageModal from './ImageModal.vue'
 import FolderModal from './FolderModal.vue'
+import LewButton from './base/LewButton.vue'
 
 import axios from '../axios/http'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, defineEmits } from 'vue'
 
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { GithubConfig } from '../model/github_config.model'
 const route = useRoute()
-
-watch(
-  () => route.query,
-  (n: any) => {
-    isOpenImageModal.value = false
-  }
-)
+const router = useRouter()
+const emit = defineEmits(['SetImageModal'])
 
 let github_config: GithubConfig = JSON.parse(
   localStorage.getItem('github_config') as any
@@ -32,6 +28,32 @@ onMounted(() => {
   }
 })
 
+watch(
+  () => route.query,
+  (n: any) => {
+    isOpenImageModal.value = false
+    isOpenFolderModal.value = false
+    if (!github_config?.owner && route.path != '/setting') {
+      router.push('/setting')
+    } else if (route.query.reload) {
+      GetFolders()
+    } else if (route.path == '/' && !route.query.folder) {
+      router.push(`/?folder=${folders.value[0]?.name}`)
+    }
+  }
+)
+
+watch(
+  () => isOpenImageModal.value,
+  (n: any) => {
+    if (isOpenImageModal.value) {
+      emit('SetImageModal', true)
+    } else {
+      emit('SetImageModal', false)
+    }
+  }
+)
+
 const GetFolders = () => {
   axios
     .get({
@@ -41,6 +63,9 @@ const GetFolders = () => {
     })
     .then((res: any) => {
       folders.value = res.data.filter((e) => e.type == 'dir')
+      if (route.path == '/' && !route.query.folder) {
+        router.push(`/?folder=${folders.value[0].name}`)
+      }
     })
 }
 // const AddImage = async (e) => {
@@ -105,16 +130,21 @@ const GetFolders = () => {
       ></folder-modal>
       <div class="handle-box">
         <!-- 创建文件夹 -->
-
-        <div @click="isOpenImageModal = !isOpenImageModal" class="button">
+        <lew-button
+          @click="isOpenImageModal = !isOpenImageModal"
+          :center="true"
+        >
           上传图片
-        </div>
-        <div @click="isOpenImageModal = true" class="button">历史上传</div>
-        <div @click="isOpenFolderModal = !isOpenFolderModal" class="button">
-          创建文件夹
-        </div>
+        </lew-button>
 
-        <a href="/#/setting" class="button">设置</a>
+        <lew-button
+          @click="isOpenFolderModal = !isOpenFolderModal"
+          :center="true"
+        >
+          创建文件夹
+        </lew-button>
+        <a href="/#/setting"> <lew-button :center="true"> 设置 </lew-button></a>
+        <lew-button :center="true"> 关于 </lew-button>
       </div>
     </div>
     <!-- 上传图片 -->
@@ -171,9 +201,10 @@ const GetFolders = () => {
       font-size: 26px;
       font-weight: bolder;
       color: var(--text-color);
+
       span {
-        background: rgb(209, 207, 207);
-        color: #000;
+        background: var(--primary-color);
+        color: #fff;
         border-radius: 2px;
         padding: 0px 3px;
         margin-left: 4px;

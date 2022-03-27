@@ -36,11 +36,12 @@ class xwlRequest {
         return response
       },
       (error) => {
-        console.log(error.response)
-        Alert({
-          type: 'danger',
-          text: FormatZhByMessage(error.response.data.message),
-        })
+        if (error.response.data.message != 'Not Found') {
+          Alert({
+            type: 'danger',
+            text: FormatZhByMessage(error.response.data.message),
+          })
+        }
         //响应失败的拦截
         return Promise.reject(error)
       }

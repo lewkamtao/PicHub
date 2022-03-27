@@ -2,21 +2,28 @@
 import { Alert } from '../util/alert'
 import { GetFileSize, CopyText } from '../util/util'
 import { GithubConfig } from '../model/github_config.model'
+import LewButton from '../components/base/LewButton.vue'
 
 import axios from '../axios/http'
-import { onMounted, watch, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted, watch, ref, defineEmits } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const emit = defineEmits(['SetLoading'])
 
 const route = useRoute()
+const router = useRouter()
+
 watch(
   () => route.query,
   (n: any) => {
-    GetImage(n.folder)
+    if (n.folder) {
+      GetImage(n.folder)
+    }
   }
 )
 
 let images = ref([] as any)
-let loading = ref(false)
+let files = ref([] as any)
 
 onMounted(() => {
   GetImage(route.query.folder)
@@ -27,15 +34,16 @@ let github_config: GithubConfig = JSON.parse(
 )
 
 const GetImage = (folderPath) => {
-  loading.value = true
+  emit('SetLoading', true)
   axios
     .get({
-      url: `/repositories/${github_config.repoId}/contents/${
+      url: `/repositories/${github_config?.repoId}/contents/${
         folderPath || ''
       }?t=${new Date().getTime()}`,
     })
     .then((res: any) => {
-      loading.value = false
+      files.value = res.data
+      emit('SetLoading', false)
       res.data.forEach((e) => {
         if (e.download_url) {
           e.download_url = `https://cdn.jsdelivr.net/gh/${github_config.owner}/${github_config.repoPath}@master/${folderPath}/${e.name}`
@@ -75,6 +83,29 @@ const GetCdnText = (url) => {
   return `![03517ae2c7624a1e805bb7721ae2140d](${url})`
 }
 
+let loading = ref(false)
+const DeleteForder = () => {
+  if (files.value[0]?.name == 'init') {
+    loading.value = true
+    axios
+      .delete({
+        url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${route.query.folder}/init`,
+        data: {
+          message: 'delete init file',
+          sha: files.value[0]?.sha,
+        },
+      })
+      .then(() => {
+        Alert({
+          type: 'success',
+          text: '删除成功',
+        })
+        loading.value = false
+        router.push('/?reload=true')
+      })
+  }
+}
+
 const FormatWImageInfo = (image) => {
   return `
     <div class="image-info">
@@ -94,10 +125,20 @@ const FormatWImageInfo = (image) => {
 
 <template>
   <!-- 图片列表 -->
-  <div class="main" :class="{ loading: loading }">
+  <div class="index-wrapper">
     <div v-show="images.length == 0" class="not-found">
       <div class="title">无图片</div>
       <div class="message">你可以在左侧栏底部上传图片。</div>
+      <div style="margin-top: 10px">
+        <LewButton
+          @click="DeleteForder"
+          type="danger"
+          style="width: 120px; margin: 0 auto"
+          :center="true"
+          :loading="loading"
+          >删除文件夹</LewButton
+        >
+      </div>
     </div>
 
     <div v-show="images.length > 0" class="list">
@@ -130,7 +171,9 @@ const FormatWImageInfo = (image) => {
         </div>
       </div>
     </div>
-    <div class="footer">{{ images.length }} images</div>
+    <div v-if="images.length > 0" class="footer">
+      {{ images.length }} images
+    </div>
   </div>
 </template>
 <style>
@@ -151,41 +194,21 @@ const FormatWImageInfo = (image) => {
 </style>
 
 <style lang="scss" scoped>
-.main::after {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #000;
-  content: 'Loading...';
-  font-size: 18px;
-  border-radius: 14px;
-  background-color: var(--background);
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.25s ease;
-}
-.loading::after {
-  opacity: 0.7;
-  z-index: 1;
-}
-.main {
+.index-wrapper {
   position: relative;
-  width: calc(100vw - 200px);
+  width: 100%;
   height: 100vh;
   overflow-y: auto;
-  padding: 15px;
+
   box-sizing: border-box;
   .list {
     display: grid;
+    align-content: flex-start;
+    padding: 15px;
     grid-gap: 15px;
+    min-height: calc(100vh - 70px);
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     list-style: none;
-    padding-bottom: 45px;
     .item {
       position: relative;
       height: 0;
@@ -195,7 +218,6 @@ const FormatWImageInfo = (image) => {
       border-radius: 12px;
       border: 1px rgba(247, 245, 245, 0) solid;
       overflow: hidden;
-      transition: all 0.1s;
       cursor: pointer;
       .name {
         width: 80%;
@@ -309,11 +331,10 @@ const FormatWImageInfo = (image) => {
     }
   }
   .footer {
-    position: fixed;
+    position: sticky;
     bottom: 0px;
-    left: 0px;
-    width: calc(100% - 200px);
-    margin-left: 200px;
+    right: 0px;
+    width: 100%;
     height: 40px;
     line-height: 40px;
     font-size: 14px;
@@ -324,6 +345,7 @@ const FormatWImageInfo = (image) => {
   }
   .not-found {
     position: absolute;
+
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);

@@ -110,8 +110,8 @@ function FormatZhByMessage(text) {
       return '请勿重复上传相同内容'
     }
 
-    case text == 'Bad credentials': {
-      return '未知错误'
+    case text == 'path cannot start with a slash': {
+      return '名称不能为空'
     }
     case text == 'Bad credentials': {
       return '未知错误'

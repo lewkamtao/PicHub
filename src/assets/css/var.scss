@@ -1,7 +1,19 @@
 html {
-    --text-color: rgba(0, 0, 0, 0.9);
+    --primary-color: #0071de;
+    --primary-color-2: #0460b6;
+    // 
+    --danger-color: #c44740;
+    --danger-color-2: #a7342d;
+    // 
+    --success-color: #86a361;
+    --success-color-2: #598b4d;
+    // 
+    --warning-color: #f5f0c6;
+    --warning-color-2: #d6d19f;
+    //  
+    --text-color: rgb(0, 0, 0);
     --text-color-2: rgba(102, 102, 102, 0.9);
-    --invert-text-color: rgba(241, 241, 241, 0.9);
+    --invert-text-color: rgb(255, 255, 255);
     --background: #ffffff;
     --background-2: #f5f5f5;
     --invert-background: rgb(46, 45, 45);
@@ -24,6 +36,9 @@ html {
 }
 
 .dark {
+    --primary-color: #0071de;
+    --primary-color-2: #0460b6;
+    //
     --text-color: rgba(233, 233, 233, 0.9);
     --text-color-2: rgba(233, 233, 233, 0.9);
     --invert-text-color: rgba(77, 77, 77, 0.9);

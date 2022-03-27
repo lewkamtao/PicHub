@@ -2,6 +2,7 @@
 import { Alert } from '../util/alert'
 import axios from '../axios/http'
 import { onMounted, reactive, ref, defineProps, defineEmits } from 'vue'
+import LewButton from './base/LewButton.vue'
 
 import { GithubConfig } from '../model/github_config.model'
 let github_config: GithubConfig = JSON.parse(
@@ -12,7 +13,10 @@ const props = defineProps({ isOpen: Boolean })
 const emit = defineEmits(['close', 'updateFolderList'])
 let forderName = ref('')
 
+let loading = ref(false)
+
 const AddForder = () => {
+  loading.value = true
   axios
     .put({
       url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${forderName.value}/init
@@ -23,6 +27,7 @@ const AddForder = () => {
       },
     })
     .then((res: any) => {
+      loading.value = false
       Alert({
         type: 'success',
         text: '创建成功！',
@@ -41,8 +46,17 @@ const AddForder = () => {
       <input type="text" placeholder="请输入" v-model="forderName" />
     </div>
     <div class="form-item btn-box">
-      <div @click="AddForder()" class="button">确认</div>
-      <div @click="emit('close')" class="button button-danger">取消</div>
+      <lew-button
+        @click="AddForder()"
+        type="primary"
+        :center="true"
+        :loading="loading"
+      >
+        确认
+      </lew-button>
+      <lew-button @click="emit('close')" type="danger" :center="true"
+        >取消</lew-button
+      >
     </div>
   </div>
 </template>
