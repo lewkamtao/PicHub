@@ -22,7 +22,7 @@ const AddForder = () => {
       url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${forderName.value}/init
 `,
       data: {
-        message: 'feat:add a forder',
+        message: 'add a forder',
         content: '5q2k5paH5Lu255So5LqO5Yib5bu65paH5Lu25aS5',
       },
     })
