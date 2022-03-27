@@ -26,7 +26,11 @@ let images = ref([] as any)
 let files = ref([] as any)
 
 onMounted(() => {
-  GetImage(route.query.folder)
+  if (github_config?.owner) {
+    GetImage(route.query.folder)
+  } else {
+    router.push('/setting')
+  }
 })
 
 let github_config: GithubConfig = JSON.parse(
