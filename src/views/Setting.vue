@@ -98,7 +98,7 @@ const Exit = () => {
 
 <template>
   <div class="main">
-    <form>
+    <div class="form">
       <div class="title">{{ token ? '设置' : '开始' }}</div>
       <div class="form-item">
         <label>access token </label>
@@ -106,7 +106,7 @@ const Exit = () => {
       </div>
       <div class="form-item" v-show="repos.length > 0">
         <label>选择一个 Github 仓库 </label>
-        <select name="" id="" v-model="form.repoId">
+        <select v-model="form.repoId">
           <option value="" hidden>请选择</option>
           <option v-for="repo in repos" :value="repo.id" :key="repo.id">
             {{ repo.name }}
@@ -118,7 +118,6 @@ const Exit = () => {
         type="primary"
         v-show="repos.length == 0"
         @click="SetToken()"
-        :center="true"
         :loading="loading_1"
       >
         确定
@@ -127,8 +126,7 @@ const Exit = () => {
       <lew-button
         type="primary"
         v-show="repos.length > 0"
-        @click="Save"
-        :center="true"
+        @click="Save()"
         :loading="loading_2"
       >
         保存配置
@@ -137,12 +135,11 @@ const Exit = () => {
         type="danger"
         v-show="repos.length > 0"
         @click="Exit()"
-        :center="true"
         :loading="loading_3"
       >
         退出登录
       </lew-button>
-    </form>
+    </div>
   </div>
 </template>
 <style></style>
@@ -154,17 +151,9 @@ const Exit = () => {
   min-height: 100vh;
 }
 .title {
-  font-size: 30px;
   margin-top: 50px;
   margin-bottom: 20px;
   color: var(--text-color-1);
   font-weight: bold;
-}
-form {
-  padding: 20px;
-  box-sizing: border-box;
-  margin: 0 auto;
-  max-width: 450px;
-  width: 450px;
 }
 </style>

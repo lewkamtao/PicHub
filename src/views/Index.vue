@@ -75,6 +75,9 @@ const GetImage = (folderPath) => {
       }
       images.value = res.data.filter((e) => isAssetTypeAnImage(e.name))
     })
+    .catch(() => {
+      emit('SetLoading', false)
+    })
 }
 
 const GetMarkdownText = (url) => {
@@ -107,7 +110,34 @@ const DeleteForder = () => {
         loading.value = false
         router.push('/?reload=true')
       })
+  } else {
+    Alert({
+      type: 'success',
+      text: '该文件夹内有其他文件，请先登录Github中删除所有文件。',
+    })
   }
+}
+
+const DeleteImage = (item) => {
+  emit('SetLoading', true)
+  axios
+    .delete({
+      url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${route.query.folder}/${item.name}`,
+      data: {
+        message: 'delete a image',
+        sha: item.sha,
+      },
+    })
+    .then(() => {
+      Alert({
+        type: 'success',
+        text: '删除成功',
+      })
+      GetImage(route.query.folder)
+    })
+    .catch(() => {
+      emit('SetLoading', false)
+    })
 }
 
 const FormatWImageInfo = (image) => {
@@ -138,7 +168,7 @@ const FormatWImageInfo = (image) => {
           @click="DeleteForder"
           type="danger"
           style="width: 120px; margin: 0 auto"
-          :center="true"
+          
           :loading="loading"
           >删除文件夹</LewButton
         >
@@ -147,7 +177,7 @@ const FormatWImageInfo = (image) => {
 
     <div v-show="images.length > 0" class="list">
       <div v-for="(item, index) in images" :key="index" class="item">
-        <div class="del"></div>
+        <div @click="DeleteImage(item)" class="del"></div>
         <a
           class="image"
           :data-info="FormatWImageInfo(item)"

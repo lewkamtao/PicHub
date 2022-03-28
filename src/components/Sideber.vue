@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Alert } from '../util/alert'
-import { compressImage } from '../util/upImage'
+
 import ImageModal from './ImageModal.vue'
 import FolderModal from './FolderModal.vue'
 import LewButton from './base/LewButton.vue'
@@ -68,28 +67,7 @@ const GetFolders = () => {
       }
     })
 }
-// const AddImage = async (e) => {
-//   var file = e.target.files[0]
-//   axios
-//     .put({
-//       url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${route.query.folder}/${file.name}
-// `,
-//       data: {
-//         message: 'upload a image by pichub',
-//         content: (await compressImage(e.target.files[0], 'mozJPEG')).replace(
-//           'data:image/jpeg;base64,',
-//           ''
-//         ),
-//       },
-//     })
-//     .then((res: any) => {
-//       Alert({
-//         type: 'success',
-//         text: '创建成功！',
-//       })
-//       GetFolders()
-//     })
-// }
+
 </script>
 
 <template>
@@ -130,25 +108,19 @@ const GetFolders = () => {
       ></folder-modal>
       <div class="handle-box">
         <!-- 创建文件夹 -->
-        <lew-button
-          @click="isOpenImageModal = !isOpenImageModal"
-          :center="true"
-        >
-          上传图片
+        <lew-button @click="isOpenImageModal = !isOpenImageModal">
+          图片上传
         </lew-button>
 
-        <lew-button
-          @click="isOpenFolderModal = !isOpenFolderModal"
-          :center="true"
-        >
+        <lew-button @click="isOpenFolderModal = !isOpenFolderModal">
           创建文件夹
         </lew-button>
-        <a href="/#/setting"> <lew-button :center="true"> 设置 </lew-button></a>
-        <lew-button :center="true"> 关于 </lew-button>
+        <a href="/#/setting"> <lew-button> 设置 </lew-button></a>
+        <a href="/#/about"> <lew-button> 关于 </lew-button></a>
       </div>
     </div>
     <!-- 上传图片 -->
-    <image-modal :isOpen="isOpenImageModal"></image-modal>
+    <image-modal :isOpen="isOpenImageModal" :folders="folders"></image-modal>
   </div>
 </template>
 <style>
@@ -205,8 +177,8 @@ const GetFolders = () => {
       span {
         background: var(--primary-color);
         color: #fff;
-        border-radius: 2px;
-        padding: 0px 3px;
+        border-radius: 4px;
+        padding: 0px 4px;
         margin-left: 4px;
       }
     }

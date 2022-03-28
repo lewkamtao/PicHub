@@ -6,18 +6,26 @@ import {
 } from '@yireen/squoosh-browser/dist/client/lazy-app/feature-meta'
 
 // type可选 mozJPEG / avif / webP
-const compressImage = (file, type) => {
+const uploadHelper = (file, folder) => {
   return new Promise(async (resolve) => {
     const compress = new Compress(file, {
       encoderState: {
-        type: type,
-        options: encoderMap[type].meta.defaultOptions,
+        type: 'mozJPEG',
+        options: encoderMap.mozJPEG.meta.defaultOptions,
       },
       processorState: defaultProcessorState,
       preprocessorState: defaultPreprocessorState,
     })
     const compressFile = await compress.process()
-    resolve(fileByBase64(compressFile))
+    const base64File: any = await fileByBase64(compressFile)
+    resolve({
+      name: file.name,
+      orginal_size: file.size,
+      compress_size: compressFile.size,
+      base64data: base64File.replace('data:image/jpeg;base64,', ''),
+      base64: base64File,
+      folder: folder,
+    })
   })
 }
 /**
@@ -35,4 +43,4 @@ const fileByBase64 = (file) => {
     }
   })
 }
-export { compressImage, fileByBase64 }
+export { uploadHelper, fileByBase64 }

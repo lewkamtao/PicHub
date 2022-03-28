@@ -8,19 +8,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  center: {
-    type: Boolean,
-    default: false,
-  },
 })
 </script>
 
 <template>
   <button
     class="button"
-    :class="`button-${props.type} ${props.center ? 'button-center' : ''} ${
-      props.loading ? 'button-loading' : ''
-    }`"
+    :class="`button-${props.type}  ${props.loading ? 'button-loading' : ''}`"
   >
     <slot></slot>
   </button>
@@ -31,11 +25,11 @@ const props = defineProps({
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 45px;
   margin-bottom: 7px;
   border-radius: 12px;
-  padding: 0px 0px 0px 30px;
   box-sizing: border-box;
   transition: all 0.05s;
   font-size: 14px;
@@ -74,11 +68,6 @@ const props = defineProps({
   background-color: var(--warning-color);
 }
 
-.button-center {
-  justify-content: center;
-  padding-left: 0px;
-}
-
 .button:hover {
   color: var(--text-color);
   background: var(--hover-bg-color);
@@ -112,7 +101,14 @@ const props = defineProps({
   transition: all 0.15s;
   transform: translate(-50%, -50%);
 }
-
+@keyframes donut-spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
 .button-loading {
   color: rgba(0, 0, 0, 0);
 }
@@ -123,12 +119,5 @@ const props = defineProps({
   opacity: 1;
 }
 
-@keyframes donut-spin {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
+
 </style>

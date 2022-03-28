@@ -16,6 +16,14 @@ let forderName = ref('')
 let loading = ref(false)
 
 const AddForder = () => {
+  if (!github_config?.owner) {
+    Alert({
+      type: 'success',
+      text: 'Github账号未授权',
+    })
+    return
+  }
+
   loading.value = true
   axios
     .put({
@@ -49,12 +57,12 @@ const AddForder = () => {
       <lew-button
         @click="AddForder()"
         type="primary"
-        :center="true"
+        
         :loading="loading"
       >
         确认
       </lew-button>
-      <lew-button @click="emit('close')" type="danger" :center="true"
+      <lew-button @click="emit('close')" type="danger" 
         >取消</lew-button
       >
     </div>
