@@ -19,7 +19,10 @@ const uploadHelper = (file, folder) => {
     const compressFile = await compress.process()
     const base64File: any = await fileByBase64(compressFile)
     resolve({
-      name: file.name,
+      name: `${file.name.substring(
+        0,
+        file.name.lastIndexOf('.')
+      )}_${createHash(6)}_.jpg`,
       orginal_size: file.size,
       compress_size: compressFile.size,
       base64data: base64File.replace('data:image/jpeg;base64,', ''),
@@ -43,4 +46,12 @@ const fileByBase64 = (file) => {
     }
   })
 }
+
+function createHash(hashLength) {
+  // 默认长度 24
+  return Array.from(Array(Number(hashLength) || 24), () =>
+    Math.floor(Math.random() * 36).toString(36)
+  ).join('')
+}
+
 export { uploadHelper, fileByBase64 }

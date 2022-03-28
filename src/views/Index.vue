@@ -8,7 +8,7 @@ import axios from '../axios/http'
 import { onMounted, watch, ref, defineEmits } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-const emit = defineEmits(['SetLoading'])
+const emit = defineEmits(['SetLoading', 'OpenUploadModel'])
 
 const route = useRoute()
 const router = useRouter()
@@ -17,7 +17,7 @@ watch(
   () => route.query,
   (n: any) => {
     if (n.folder) {
-      GetImage(n.folder)
+      GetImages(n.folder)
     }
   }
 )
@@ -27,7 +27,7 @@ let files = ref([] as any)
 
 onMounted(() => {
   if (github_config?.owner) {
-    GetImage(route.query.folder)
+    GetImages(route.query.folder)
   } else {
     router.push('/setting')
   }
@@ -37,7 +37,7 @@ let github_config: GithubConfig = JSON.parse(
   localStorage.getItem('github_config') as any
 )
 
-const GetImage = (folderPath) => {
+const GetImages = (folderPath) => {
   emit('SetLoading', true)
   axios
     .get({
@@ -81,13 +81,12 @@ const GetImage = (folderPath) => {
 }
 
 const GetMarkdownText = (url) => {
-  return `![03517ae2c7624a1e805bb7721ae2140d](${url})`
+  var alt = url.substring(url.lastIndexOf('/') + 1)
+  return `![${alt}](${url})`
 }
-const GetHtmlText = (url) => {
-  return `![03517ae2c7624a1e805bb7721ae2140d](${url})`
-}
+
 const GetCdnText = (url) => {
-  return `![03517ae2c7624a1e805bb7721ae2140d](${url})`
+  return ` ${url}`
 }
 
 let loading = ref(false)
@@ -133,7 +132,7 @@ const DeleteImage = (item) => {
         type: 'success',
         text: '删除成功',
       })
-      GetImage(route.query.folder)
+      GetImages(route.query.folder)
     })
     .catch(() => {
       emit('SetLoading', false)
@@ -155,6 +154,10 @@ const FormatWImageInfo = (image) => {
     }</div> </div>
   `
 }
+
+defineExpose({
+  GetImages,
+})
 </script>
 
 <template>
@@ -165,11 +168,16 @@ const FormatWImageInfo = (image) => {
       <div class="message">你可以在左侧栏底部上传图片。</div>
       <div style="margin-top: 10px">
         <LewButton
+          @click="emit('OpenUploadModel')"
+          type="primary"
+          style="width: 120px; margin: 10px auto"
+          >上传图片</LewButton
+        >
+        <LewButton
           @click="DeleteForder"
           type="danger"
-          style="width: 120px; margin: 0 auto"
-          
           :loading="loading"
+          style="width: 120px; margin: 0 auto"
           >删除文件夹</LewButton
         >
       </div>
@@ -192,12 +200,12 @@ const FormatWImageInfo = (image) => {
           <div class="copy-box">
             <span
               class="copy-btn"
-              v-bind:data-clipboard-text="GetMarkdownText(item.url)"
+              v-bind:data-clipboard-text="GetMarkdownText(item.download_url)"
               @click="CopyText()"
               >markdown</span
             ><span
               class="copy-btn"
-              v-bind:data-clipboard-text="GetCdnText(item.url)"
+              v-bind:data-clipboard-text="GetCdnText(item.download_url)"
               @click="CopyText()"
               >cdn</span
             >
@@ -276,7 +284,7 @@ const FormatWImageInfo = (image) => {
           width: 100%;
           height: 100%;
           object-fit: contain;
-          border-radius: 7px;
+          border-radius: 4px;
         }
       }
       .del {

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-
 import ImageModal from './ImageModal.vue'
 import FolderModal from './FolderModal.vue'
 import LewButton from './base/LewButton.vue'
+import { Alert } from '../util/alert'
 
 import axios from '../axios/http'
-import { onMounted, ref, watch, defineEmits } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 import { GithubConfig } from '../model/github_config.model'
@@ -30,7 +30,6 @@ onMounted(() => {
 watch(
   () => route.query,
   (n: any) => {
-    isOpenImageModal.value = false
     isOpenFolderModal.value = false
     if (!github_config?.owner && route.path != '/setting') {
       router.push('/setting')
@@ -68,6 +67,20 @@ const GetFolders = () => {
     })
 }
 
+const changeImageModel = () => {
+  if (!github_config.owner) {
+    Alert({
+      type: 'danger',
+      text: '请先授权',
+    })
+    return
+  }
+  isOpenImageModal.value = !isOpenImageModal.value
+}
+
+defineExpose({
+  changeImageModel,
+})
 </script>
 
 <template>
@@ -108,9 +121,7 @@ const GetFolders = () => {
       ></folder-modal>
       <div class="handle-box">
         <!-- 创建文件夹 -->
-        <lew-button @click="isOpenImageModal = !isOpenImageModal">
-          图片上传
-        </lew-button>
+        <lew-button @click="changeImageModel"> 图片上传 </lew-button>
 
         <lew-button @click="isOpenFolderModal = !isOpenFolderModal">
           创建文件夹

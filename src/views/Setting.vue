@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Alert } from '../util/alert'
 import LewButton from '../components/base/LewButton.vue'
-import { GetFileSize, CopyText } from '../util/util'
 import { GithubConfig } from '../model/github_config.model'
 
 import axios from '../axios/http'
@@ -101,7 +100,7 @@ const Exit = () => {
     <div class="form">
       <div class="title">{{ token ? '设置' : '开始' }}</div>
       <div class="form-item">
-        <label>access token </label>
+        <label>Github access token </label>
         <input type="text" v-model="token" placeholder="请输入" />
       </div>
       <div class="form-item" v-show="repos.length > 0">

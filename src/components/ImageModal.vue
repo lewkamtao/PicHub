@@ -10,6 +10,8 @@ import { UploadImage } from '../model/upload_image.model'
 import { GetFileSize, CopyText } from '../util/util'
 
 const route = useRoute()
+const router = useRouter()
+
 const props = defineProps({ isOpen: Boolean, folders: Array as any })
 
 let folder = ref(route.query.folder)
@@ -36,6 +38,14 @@ let github_config: GithubConfig = JSON.parse(
 let loading = ref(false)
 
 const AddImage = async (e) => {
+  if (!!!folder.value) {
+    Alert({
+      type: 'danger',
+      text: '请选择文件夹',
+    })
+    return
+  }
+
   let files = e.target.files
   let upload_files: any = []
   upload_files = await Promise.all(
@@ -85,9 +95,15 @@ const Upload = async () => {
       })
     })
   )
+  Alert({
+    type: 'success',
+    text: '上传完成',
+  })
   upload_list.value = upload_list.value.filter((e) => e.status != 'success')
   loading.value = false
   localStorage.setItem('history_list', JSON.stringify(history_list.value))
+
+  router.push((route.fullPath += '&t=' + new Date().getTime()) as any)
 }
 </script>
 
@@ -108,7 +124,6 @@ const Upload = async () => {
     </div>
 
     <div class="upload-list">
-      <div class="title-3">待上传图片</div>
       <label class="upload-box">
         <svg
           class="upload-icon"
@@ -150,6 +165,7 @@ const Upload = async () => {
           multiple
         />
       </label>
+      <div v-show="upload_list.length > 0" class="title-3">待上传图片</div>
       <div v-for="item in upload_list" :key="item.name" class="item">
         <div class="info">
           <div class="name">
@@ -331,20 +347,22 @@ const Upload = async () => {
         border: 1px solid var(--border-color);
       }
       .info {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
         margin-right: 10px;
         width: calc(100% - 60px);
-        height: 100%;
 
         .name {
-          display: flex;
-          align-items: center;
-
-          width: calc(100% - 150px);
+          display: inline;
+          position: relative;
+          max-width: calc(100% - 120px);
           font-size: 14px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
           .icon {
+            position: absolute;
+            top: 50%;
+            right: -35px;
+            transform: translate(-50%, -50%);
             width: 18px;
             margin-left: 10px;
           }
@@ -360,10 +378,10 @@ const Upload = async () => {
           }
           @keyframes uploading {
             0% {
-              transform: rotate(0deg);
+              transform:translate(-50%, -50%) rotate(0deg);
             }
             100% {
-              transform: rotate(360deg);
+              transform:translate(-50%, -50%) rotate(360deg);
             }
           }
         }

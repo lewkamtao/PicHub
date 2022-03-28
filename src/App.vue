@@ -12,12 +12,17 @@ const SetImageModal = (value) => {
 const SetLoading = (value) => {
   isLoading.value = value
 }
+
+const sideberRef: any = ref(null)
+const OpenUploadModel = () => {
+  sideberRef.value.changeImageModel()
+}
 </script>
 
 <template>
   <div class="wrapper">
     <div id="alert-box"></div>
-    <Sideber @SetImageModal="SetImageModal"></Sideber>
+    <Sideber @SetImageModal="SetImageModal" ref="sideberRef"></Sideber>
     <div
       class="main"
       :class="{ loading: isLoading }"
@@ -28,7 +33,10 @@ const SetLoading = (value) => {
           : `width:calc(100% - 200px)`
       "
     >
-      <router-view @SetLoading="SetLoading" />
+      <router-view
+        @SetLoading="SetLoading"
+        @OpenUploadModel="OpenUploadModel()"
+      />
     </div>
   </div>
 </template>
