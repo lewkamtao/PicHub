@@ -35,8 +35,6 @@ watch(
       router.push('/setting')
     } else if (route.query.reload) {
       GetFolders()
-    } else if (route.path == '/' && !route.query.folder) {
-      router.push(`/?folder=${folders.value[0]?.name}`)
     }
   }
 )
