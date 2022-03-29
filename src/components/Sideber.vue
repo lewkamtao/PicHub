@@ -69,7 +69,7 @@ const changeImageModel = () => {
   if (!github_config?.owner) {
     Alert({
       type: 'danger',
-      text: '请先授权',
+      text: 'Github账号未授权',
     })
     return
   }
