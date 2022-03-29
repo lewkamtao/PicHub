@@ -86,29 +86,28 @@ const DropUpload = (e) => {
 
 // 监听粘贴操作
 const PasteUpload = (e) => {
-  // const items = (e.clipboardData || window.clipboardData).items
-  // let file = null
-  // if (!items || items.length === 0) {
-  //   Alert({
-  //     type: 'danger',
-  //     text: `当前浏览器不支持本地`,
-  //   })
-  //   return
-  // }
-  // // 搜索剪切板items
-  // for (let i = 0; i < items.length; i++) {
-  //   if (items[i].type.indexOf('image') !== -1) {
-  //     file = items[i].getAsFile()
-  //     break
-  //   }
-  // }
-  // if (!file) {
-  //   Alert({
-  //     type: 'danger',
-  //     text: `粘贴内容非图片`,
-  //   })
-  //   return
-  // }
+  const items = e.clipboardData.items //  获取剪贴板中的数据
+  let files: any = null //  用来保存 files 对象
+  if (items.length > 0) {
+    //  判断剪贴板中是否是文件
+    if (items[0].kind == 'file') {
+      files = items[0].getAsFile() //  获取文件
+      //  判断是否是图片
+      if (files.type.indexOf('image') >= 0) {
+        AddImageToList([files])
+      } else {
+        Alert({
+          type: 'danger',
+          text: `请粘贴图片文件`,
+        })
+      }
+    } else {
+      Alert({
+        type: 'danger',
+        text: `请粘贴图片文件`,
+      })
+    }
+  }
 }
 
 // 点击上传
@@ -204,7 +203,7 @@ const GetCdnText = (url) => {
   <div
     class="image-modal"
     id="drop-area"
-    v-on:paste="PasteUpload"
+    @paste="PasteUpload"
     :class="{ isOpen: props.isOpen }"
   >
     <svg
@@ -265,7 +264,9 @@ const GetCdnText = (url) => {
             stroke-width="18"
             d="M256 448.21V207.79"
           ></path></svg
-        >{{ drop_active ? `松开鼠标上传文件` : `点击或拖拽到此处上传文件` }}
+        >{{
+          drop_active ? `松开鼠标上传文件` : `点击、拖拽、粘贴到此处上传文件`
+        }}
         <input
           @change="ClickUpload"
           v-show="false"
