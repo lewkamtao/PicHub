@@ -5,7 +5,7 @@ import { GithubConfig } from '../model/github_config.model'
 import LewButton from '../components/base/LewButton.vue'
 
 import axios from '../axios/http'
-import { onMounted, watch, ref, defineEmits } from 'vue'
+import { onMounted, watch, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const emit = defineEmits(['SetLoading', 'OpenUploadModel'])

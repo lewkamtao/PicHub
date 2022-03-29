@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Alert } from '../util/alert'
 import axios from '../axios/http'
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref } from 'vue'
 import LewButton from './base/LewButton.vue'
 import { GithubConfig } from '../model/github_config.model'
 

@@ -49,7 +49,6 @@ a[data-fancybox] img {
 
 .fancybox__rightCol {
     width: 20vw;
-    max-width: 300px;
     height: 100%;
     padding: 2rem;
     overflow: auto;
