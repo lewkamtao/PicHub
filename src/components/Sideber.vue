@@ -70,11 +70,11 @@ const GetFolders = () => {
 }
 
 const changeImageModel = () => {
-  if (!github_config?.owner) {
+  if (!github_config?.repoId) {
     Alert({
       type: 'danger',
-      text: 'Github账号未授权',
-    })
+      text: '请前往设置，完成配置信息', 
+    }) 
     return
   }
   isOpenImageModal.value = !isOpenImageModal.value

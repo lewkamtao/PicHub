@@ -59,7 +59,6 @@ const GetRepos = () => {
 }
 
 const Save = () => {
-  loading_2.value = true
   if (!form.value.repoId) {
     Alert({
       type: 'warning',
@@ -67,6 +66,7 @@ const Save = () => {
     })
     return
   }
+  loading_2.value = true
   form.value.repoPath = repos.value.find((e) => form.value.repoId == e.id).name
   localStorage.setItem('github_config', JSON.stringify(form.value))
 
@@ -98,14 +98,23 @@ const Exit = () => {
 <template>
   <div class="main">
     <div class="form">
-      <div v-if="!token" class="title">开始</div>
-      <div class="user-info">
+      <div v-if="!form.name" class="title">开始</div>
+      <div v-show="form.name" class="user-info">
         <img class="avatar" :src="form.avatarUrl" alt="" srcset="" />
         <div class="name">{{ form.name }}</div>
       </div>
       <div class="form-item">
-        <label>Github access token </label>
+        <label
+          >Github access token
+          <a target="_blank" href="https://juejin.cn/post/6989307240633073700"
+            >如何获取？</a
+          >
+        </label>
         <input type="text" v-model="token" placeholder="请输入" />
+        <p class="tips">
+          注意： <br />Pichub不会对你的 access token
+          进行储存和转移，它只会储存在你的本机的浏览器内，所以它是相对安全的。如果你试图去浏览器的缓存中清除掉它，你会发现，它需要重新登陆了，但我们不推荐这样操作。
+        </p>
       </div>
       <div class="form-item" v-show="repos.length > 0">
         <label>选择一个 Github 仓库 </label>
@@ -152,6 +161,12 @@ const Exit = () => {
   width: 100%;
   background: var(--background-2);
   min-height: 100vh;
+  .tips {
+    font-size: 12px;
+    color: #999;
+    padding: 10px;
+    line-height: 18px;
+  }
 }
 .title {
   margin-top: 50px;
@@ -177,6 +192,12 @@ const Exit = () => {
     font-size: 18px;
     line-height: 32px;
     color: var(--text-color);
+  }
+}
+label {
+  a {
+    text-decoration: underline;
+    margin-left: 10px;
   }
 }
 </style>
