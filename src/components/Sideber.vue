@@ -66,7 +66,7 @@ const GetFolders = () => {
 }
 
 const changeImageModel = () => {
-  if (!github_config.owner) {
+  if (!github_config?.owner) {
     Alert({
       type: 'danger',
       text: '请先授权',
