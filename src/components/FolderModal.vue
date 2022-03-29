@@ -23,7 +23,7 @@ let loading = ref(false)
 const AddForder = () => {
   if (!github_config?.owner) {
     Alert({
-      type: 'success',
+      type: 'danger',
       text: 'Github账号未授权',
     })
     return
