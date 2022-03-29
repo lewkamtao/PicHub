@@ -129,7 +129,11 @@ defineExpose({
       </div>
     </div>
     <!-- 上传图片 -->
-    <image-modal :isOpen="isOpenImageModal" :folders="folders"></image-modal>
+    <image-modal
+      :isOpen="isOpenImageModal"
+      :folders="folders"
+      @close="changeImageModel"
+    ></image-modal>
   </div>
 </template>
 <style>

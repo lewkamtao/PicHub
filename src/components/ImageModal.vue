@@ -2,7 +2,7 @@
 import { Alert } from '../util/alert'
 import axios from '../axios/http'
 import { uploadHelper } from '../util/uploadHelper'
-import { onMounted, watch, ref, defineProps } from 'vue'
+import { onMounted, watch, ref } from 'vue'
 import LewButton from './base/LewButton.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { GithubConfig } from '../model/github_config.model'
@@ -13,31 +13,106 @@ const route = useRoute()
 const router = useRouter()
 
 const props = defineProps({ isOpen: Boolean, folders: Array as any })
+const emit = defineEmits(['close'])
 
-let folder = ref(route.query.folder)
-let upload_list = ref<UploadImage[]>([])
-let history_list = ref<UploadImage[]>([])
+let folder = ref(route.query.folder) // 文件夹
+let upload_list = ref<UploadImage[]>([]) // 上传列表
+let history_list = ref<UploadImage[]>([]) // 历史列表
 
-onMounted(() => {
-  if (localStorage.getItem('history_list')) {
-    history_list.value = JSON.parse(localStorage.getItem('history_list') as any)
-  }
-})
-
+// 监听路由变化 改变 需要上传文件夹
 watch(
   () => route.query,
   (n: any) => {
     folder.value = n.folder
   }
 )
-
+// 获取github配置
 let github_config: GithubConfig = JSON.parse(
   localStorage.getItem('github_config') as any
 )
 
-let loading = ref(false)
+let loading = ref(false) // 加载按钮
+let drop_active = ref(false) // 拖拽状态
 
-const AddImage = async (e) => {
+onMounted(() => {
+  // 历史列表
+  if (localStorage.getItem('history_list')) {
+    history_list.value = JSON.parse(localStorage.getItem('history_list') as any)
+  }
+  // 拖拽接听
+  let drop_area: any = document.getElementById('drop-area')
+  drop_area.addEventListener('drop', DropUpload, false)
+
+  let timer: any = ''
+
+  drop_area.addEventListener('dragleave', (e) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      e.stopPropagation()
+      e.preventDefault()
+      drop_active.value = false
+    }, 200)
+  })
+
+  drop_area.addEventListener('dragover', (e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    drop_active.value = true
+  })
+})
+
+// 拖拽上传
+const DropUpload = (e) => {
+  let files = e.dataTransfer.files
+  drop_active.value = false
+  e.stopPropagation()
+  e.preventDefault()
+  let image_files = [] as any
+  console.log(files)
+  // 搜索剪切板items
+  for (let i = 0; i <= files.length - 1; i++) {
+    console.log(files[i].type.indexOf('image') !== -1)
+    if (files[i].type.indexOf('image') !== -1) {
+      image_files.push(files[i])
+    } else {
+      Alert({
+        type: 'danger',
+        text: `${files[i].name} 不是图片文件`,
+      })
+    }
+  }
+  AddImageToList(image_files)
+}
+
+// 监听粘贴操作
+const PasteUpload = (e) => {
+  // const items = (e.clipboardData || window.clipboardData).items
+  // let file = null
+  // if (!items || items.length === 0) {
+  //   Alert({
+  //     type: 'danger',
+  //     text: `当前浏览器不支持本地`,
+  //   })
+  //   return
+  // }
+  // // 搜索剪切板items
+  // for (let i = 0; i < items.length; i++) {
+  //   if (items[i].type.indexOf('image') !== -1) {
+  //     file = items[i].getAsFile()
+  //     break
+  //   }
+  // }
+  // if (!file) {
+  //   Alert({
+  //     type: 'danger',
+  //     text: `粘贴内容非图片`,
+  //   })
+  //   return
+  // }
+}
+
+// 点击上传
+const ClickUpload = (e) => {
   if (!!!folder.value) {
     Alert({
       type: 'danger',
@@ -45,11 +120,15 @@ const AddImage = async (e) => {
     })
     return
   }
-
   let files = e.target.files
+  AddImageToList(files)
+}
+
+// 添加图片到上传列表
+const AddImageToList = async (image_files) => {
   let upload_files: any = []
   upload_files = await Promise.all(
-    [...files].map((e) => {
+    [...image_files].map((e) => {
       // 等待异步操作完成，返回执行结果
       return uploadHelper(e, folder.value)
     })
@@ -57,6 +136,7 @@ const AddImage = async (e) => {
   upload_list.value = upload_list.value.concat(upload_files)
 }
 
+// 上传到github
 const Upload = async () => {
   loading.value = true
   let timer = 0
@@ -76,13 +156,14 @@ const Upload = async () => {
               },
             })
             .then((res: any) => {
+              let image = res.data.content
               e.status = 'success'
               upload_list.value[i].status = 'success'
-              e.url = res.data.url
-              e.download_url = res.data.download_url
-              e.git_url = res.data.git_url
-              e.sha = res.data.sha
-              e.html_url = res.data.html_url
+              e.url = image.url
+              e.download_url = image.download_url
+              e.git_url = image.git_url
+              e.sha = image.sha
+              e.html_url = image.html_url
               history_list.value.unshift(e)
               resolve(200)
             })
@@ -99,16 +180,45 @@ const Upload = async () => {
     type: 'success',
     text: '上传完成',
   })
+
   upload_list.value = upload_list.value.filter((e) => e.status != 'success')
   loading.value = false
   localStorage.setItem('history_list', JSON.stringify(history_list.value))
 
   router.push((route.fullPath += '&t=' + new Date().getTime()) as any)
 }
+
+// 设置复制markdown
+const GetMarkdownText = (url) => {
+  var alt = url.substring(url.lastIndexOf('/') + 1)
+  return `![${alt}](${url})`
+}
+
+// 设置复制cdn链接
+const GetCdnText = (url) => {
+  return ` ${url}`
+}
 </script>
 
 <template>
-  <div class="image-modal" :class="{ isOpen: props.isOpen }">
+  <div
+    class="image-modal"
+    id="drop-area"
+    v-on:paste="PasteUpload"
+    :class="{ isOpen: props.isOpen }"
+  >
+    <svg
+      @click="emit('close')"
+      class="icon-close"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      viewBox="0 0 512 512"
+    >
+      <path
+        d="M400 145.49L366.51 112L256 222.51L145.49 112L112 145.49L222.51 256L112 366.51L145.49 400L256 289.49L366.51 400L400 366.51L289.49 256L400 145.49z"
+        fill="currentColor"
+      ></path>
+    </svg>
     <div class="select">
       <div class="title-3">选择文件夹</div>
       <select v-model="folder">
@@ -124,7 +234,7 @@ const Upload = async () => {
     </div>
 
     <div class="upload-list">
-      <label class="upload-box">
+      <label class="upload-box" :class="drop_active ? 'drop-active' : ''">
         <svg
           class="upload-icon"
           xmlns="http://www.w3.org/2000/svg"
@@ -155,9 +265,9 @@ const Upload = async () => {
             stroke-width="18"
             d="M256 448.21V207.79"
           ></path></svg
-        >点击或拖拽到此处上传文件
+        >{{ drop_active ? `松开鼠标上传文件` : `点击或拖拽到此处上传文件` }}
         <input
-          @change="AddImage"
+          @change="ClickUpload"
           v-show="false"
           type="file"
           name="file"
@@ -167,50 +277,53 @@ const Upload = async () => {
       </label>
       <div v-show="upload_list.length > 0" class="title-3">待上传图片</div>
       <div v-for="item in upload_list" :key="item.name" class="item">
+        <div class="status-box">
+          <svg
+            v-show="item.status == 'success'"
+            class="icon icon-success"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 512 512"
+          >
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="square"
+              stroke-miterlimit="10"
+              stroke-width="44"
+              d="M416 128L192 384l-96-96"
+            ></path>
+          </svg>
+          <svg
+            v-show="item.status == 'uploading'"
+            class="icon icon-uploading"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M256 48C141.13 48 48 141.13 48 256s93.13 208 208 208s208-93.13 208-208S370.87 48 256 48zm83.69 282.65a112.24 112.24 0 0 1-195-61.29a16 16 0 0 1-20.13-24.67l23.6-23.6a16 16 0 0 1 22.37-.25l24.67 23.6a16 16 0 0 1-18 26a80.25 80.25 0 0 0 138.72 38.83a16 16 0 0 1 23.77 21.41zm47.76-63.34l-23.6 23.6a16 16 0 0 1-22.37.25l-24.67-23.6a16 16 0 0 1 17.68-26.11A80.17 80.17 0 0 0 196 202.64a16 16 0 1 1-23.82-21.37a112.17 112.17 0 0 1 194.88 61.57a16 16 0 0 1 20.39 24.47z"
+              fill="currentColor"
+            ></path>
+          </svg>
+
+          <svg
+            v-show="item.status == 'fail'"
+            class="icon icon-fail"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M400 145.49L366.51 112L256 222.51L145.49 112L112 145.49L222.51 256L112 366.51L145.49 400L256 289.49L366.51 400L400 366.51L289.49 256L400 145.49z"
+              fill="currentColor"
+            ></path>
+          </svg>
+        </div>
+
         <div class="info">
           <div class="name">
             {{ item.name }}
-            <svg
-              v-show="item.status == 'success'"
-              class="icon icon-success"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0 0 512 512"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="square"
-                stroke-miterlimit="10"
-                stroke-width="44"
-                d="M416 128L192 384l-96-96"
-              ></path>
-            </svg>
-            <svg
-              v-show="item.status == 'uploading'"
-              class="icon icon-uploading"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0 0 512 512"
-            >
-              <path
-                d="M256 48C141.13 48 48 141.13 48 256s93.13 208 208 208s208-93.13 208-208S370.87 48 256 48zm83.69 282.65a112.24 112.24 0 0 1-195-61.29a16 16 0 0 1-20.13-24.67l23.6-23.6a16 16 0 0 1 22.37-.25l24.67 23.6a16 16 0 0 1-18 26a80.25 80.25 0 0 0 138.72 38.83a16 16 0 0 1 23.77 21.41zm47.76-63.34l-23.6 23.6a16 16 0 0 1-22.37.25l-24.67-23.6a16 16 0 0 1 17.68-26.11A80.17 80.17 0 0 0 196 202.64a16 16 0 1 1-23.82-21.37a112.17 112.17 0 0 1 194.88 61.57a16 16 0 0 1 20.39 24.47z"
-                fill="currentColor"
-              ></path>
-            </svg>
-
-            <svg
-              v-show="item.status == 'fail'"
-              class="icon icon-fail"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0 0 512 512"
-            >
-              <path
-                d="M400 145.49L366.51 112L256 222.51L145.49 112L112 145.49L222.51 256L112 366.51L145.49 400L256 289.49L366.51 400L400 366.51L289.49 256L400 145.49z"
-                fill="currentColor"
-              ></path>
-            </svg>
           </div>
           <div class="tag-box">
             <span class="tag folder">{{ item.folder }}</span>
@@ -241,25 +354,52 @@ const Upload = async () => {
     <div v-show="history_list?.length > 0" class="upload-list">
       <div class="title-3">上传历史</div>
       <div v-for="item in history_list" :key="item.name" class="item">
+        <div class="status-box">
+          <svg
+            v-show="item.status == 'success'"
+            class="icon icon-success"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 512 512"
+          >
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="square"
+              stroke-miterlimit="10"
+              stroke-width="44"
+              d="M416 128L192 384l-96-96"
+            ></path>
+          </svg>
+          <svg
+            v-show="item.status == 'uploading'"
+            class="icon icon-uploading"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M256 48C141.13 48 48 141.13 48 256s93.13 208 208 208s208-93.13 208-208S370.87 48 256 48zm83.69 282.65a112.24 112.24 0 0 1-195-61.29a16 16 0 0 1-20.13-24.67l23.6-23.6a16 16 0 0 1 22.37-.25l24.67 23.6a16 16 0 0 1-18 26a80.25 80.25 0 0 0 138.72 38.83a16 16 0 0 1 23.77 21.41zm47.76-63.34l-23.6 23.6a16 16 0 0 1-22.37.25l-24.67-23.6a16 16 0 0 1 17.68-26.11A80.17 80.17 0 0 0 196 202.64a16 16 0 1 1-23.82-21.37a112.17 112.17 0 0 1 194.88 61.57a16 16 0 0 1 20.39 24.47z"
+              fill="currentColor"
+            ></path>
+          </svg>
+
+          <svg
+            v-show="item.status == 'fail'"
+            class="icon icon-fail"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M400 145.49L366.51 112L256 222.51L145.49 112L112 145.49L222.51 256L112 366.51L145.49 400L256 289.49L366.51 400L400 366.51L289.49 256L400 145.49z"
+              fill="currentColor"
+            ></path>
+          </svg>
+        </div>
         <div class="info">
           <div class="name">
             {{ item.name }}
-            <svg
-              v-show="item.status == 'success'"
-              class="icon icon-success"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0 0 512 512"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="square"
-                stroke-miterlimit="10"
-                stroke-width="44"
-                d="M416 128L192 384l-96-96"
-              ></path>
-            </svg>
           </div>
           <div class="tag-box">
             <span class="tag folder">{{ item.folder }}</span>
@@ -269,6 +409,22 @@ const Upload = async () => {
             <span class="tag compress-size">{{
               GetFileSize(item.compress_size)
             }}</span>
+
+            <span
+              v-if="item.download_url"
+              v-bind:data-clipboard-text="GetMarkdownText(item.download_url)"
+              @click="CopyText()"
+              class="tag copy-btn"
+              >markdown</span
+            >
+
+            <span
+              v-if="item.download_url"
+              v-bind:data-clipboard-text="GetCdnText(item.download_url)"
+              @click="CopyText()"
+              class="tag copy-btn"
+              >cdn</span
+            >
           </div>
         </div>
         <img :src="item.base64" class="image" />
@@ -281,27 +437,36 @@ const Upload = async () => {
 .image-modal {
   position: fixed;
   left: -300px;
+  z-index: 9;
   width: 500px;
   height: 100vh;
   background: var(--background-2);
   border-right: 1px var(--border-color) solid;
   box-sizing: border-box;
-  z-index: 9;
-  transition: all 0.25s;
   padding: 28px 14px;
   box-sizing: border-box;
   overflow-y: scroll;
+  transition: all 0.25s;
+  .icon-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    padding: 12px;
+    cursor: pointer;
+  }
   .upload-box {
-    width: 100%;
-    background: var(--background);
-    margin: 10px 0px;
-    border-radius: 12px;
-    height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
     color: #999;
+    background: var(--background);
+    margin: 10px 0px;
+    border-radius: 12px;
+    height: 200px;
     border: 3px dashed rgba($color: #000000, $alpha: 0.2);
     box-sizing: border-box;
     cursor: pointer;
@@ -310,6 +475,13 @@ const Upload = async () => {
       width: 80px;
       height: 80px;
       margin-bottom: 10px;
+    }
+  }
+  .drop-active {
+    border: 3px dashed var(--primary-color);
+    color: var(--primary-color);
+    .upload-icon {
+      color: var(--primary-color);
     }
   }
   .upload-box:hover {
@@ -328,6 +500,7 @@ const Upload = async () => {
   }
   .upload-list {
     .item {
+      position: relative;
       display: flex;
       align-items: center;
       border-radius: 12px;
@@ -338,6 +511,40 @@ const Upload = async () => {
       box-sizing: border-box;
       border: 1px solid var(--border-color);
       padding: 10px;
+      overflow: hidden;
+
+      .status-box {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        .icon {
+          width: 14px;
+          height: 14px;
+          border-radius: 30px;
+          padding: 2px;
+        }
+        .icon-success {
+          background: rgb(88, 212, 160);
+          color: #fff;
+        }
+        .icon-fail {
+          background: rgb(223, 118, 118);
+          color: #fff;
+        }
+        .icon-uploading {
+          background: rgb(45, 165, 212);
+          color: #fff;
+          animation: uploading 0.8s linear infinite;
+        }
+        @keyframes uploading {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      }
 
       .image {
         width: 50px;
@@ -346,44 +553,18 @@ const Upload = async () => {
         border-radius: 7px;
         border: 1px solid var(--border-color);
       }
+
       .info {
         margin-right: 10px;
         width: calc(100% - 60px);
 
         .name {
-          display: inline;
           position: relative;
-          max-width: calc(100% - 120px);
+          width: calc(100% - 20px);
           font-size: 14px;
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
-          .icon {
-            position: absolute;
-            top: 50%;
-            right: -35px;
-            transform: translate(-50%, -50%);
-            width: 18px;
-            margin-left: 10px;
-          }
-          .icon-success {
-            color: rgb(88, 212, 160);
-          }
-          .icon-fail {
-            color: rgb(194, 69, 69);
-          }
-          .icon-uploading {
-            color: rgb(45, 165, 212);
-            animation: uploading 0.8s linear infinite;
-          }
-          @keyframes uploading {
-            0% {
-              transform:translate(-50%, -50%) rotate(0deg);
-            }
-            100% {
-              transform:translate(-50%, -50%) rotate(360deg);
-            }
-          }
         }
         .tag-box {
           margin-top: 10px;
@@ -401,6 +582,12 @@ const Upload = async () => {
           .compress-size {
             background: var(--primary-color);
             color: #fff;
+          }
+
+          .copy-btn:hover {
+            background: var(--invert-background);
+            color: var(--invert-text-color);
+            cursor: pointer;
           }
         }
       }

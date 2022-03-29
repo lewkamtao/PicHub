@@ -30,8 +30,9 @@ import { ref } from 'vue'
           <a href="https://fancyapps.com" target="_blank">Fancybox</a>
           的加持，让图片的预览效果更好。
         </li>
-        <li>支持暗黑模式</li>
+        <li>安全且快速，数据只存在本地。</li>
         <li>封装组件（按钮表单上传等）</li>
+        <li>复制转换 Markdown 格式</li>
       </ul>
     </div>
   </div>

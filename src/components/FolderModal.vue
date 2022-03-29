@@ -1,20 +1,25 @@
 <script setup lang="ts">
 import { Alert } from '../util/alert'
 import axios from '../axios/http'
-import { onMounted, reactive, ref, defineProps, defineEmits } from 'vue'
+import { ref, defineProps, defineEmits } from 'vue'
 import LewButton from './base/LewButton.vue'
-
 import { GithubConfig } from '../model/github_config.model'
+
+// github 本地配置
 let github_config: GithubConfig = JSON.parse(
   localStorage.getItem('github_config') as any
 )
 
-const props = defineProps({ isOpen: Boolean })
-const emit = defineEmits(['close', 'updateFolderList'])
-let forderName = ref('')
+const props = defineProps({ isOpen: Boolean }) // 是否打开
+const emit = defineEmits([
+  'close', // 关闭文件夹
+  'updateFolderList', // 更新文件夹列表
+])
 
+let forderName = ref('')
 let loading = ref(false)
 
+// 添加文件夹
 const AddForder = () => {
   if (!github_config?.owner) {
     Alert({
@@ -23,7 +28,6 @@ const AddForder = () => {
     })
     return
   }
-
   loading.value = true
   axios
     .put({
@@ -44,6 +48,9 @@ const AddForder = () => {
       emit('close')
       emit('updateFolderList')
     })
+    .catch(() => {
+      loading.value = false
+    })
 }
 </script>
 
@@ -54,17 +61,10 @@ const AddForder = () => {
       <input type="text" placeholder="请输入" v-model="forderName" />
     </div>
     <div class="form-item btn-box">
-      <lew-button
-        @click="AddForder()"
-        type="primary"
-        
-        :loading="loading"
-      >
+      <lew-button @click="AddForder()" type="primary" :loading="loading">
         确认
       </lew-button>
-      <lew-button @click="emit('close')" type="danger" 
-        >取消</lew-button
-      >
+      <lew-button @click="emit('close')" type="danger">取消</lew-button>
     </div>
   </div>
 </template>
@@ -74,16 +74,16 @@ const AddForder = () => {
   position: absolute;
   left: -1px;
   bottom: 40px;
+  z-index: 9;
   width: 200px;
   height: 170px;
   background: var(--background-2);
   box-shadow: 220px 0px 220px rgba($color: #000, $alpha: 0.1);
-  z-index: 9;
   opacity: 1;
-  transition: all 0.25s;
   padding: 7px;
   box-sizing: border-box;
   border-top: 1px var(--border-color) solid;
+  transition: all 0.25s;
 }
 .isOpen {
   bottom: 200px;

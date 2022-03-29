@@ -280,7 +280,6 @@ defineExpose({
         width: 110px;
         transition: all 0.1s;
         img {
-          border: 1px var(--border-color) solid;
           width: 100%;
           height: 100%;
           object-fit: contain;
