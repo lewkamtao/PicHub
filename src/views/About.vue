@@ -40,7 +40,7 @@ import { ref } from 'vue'
 
 <style lang="scss" scoped>
 .about-wrapper {
-  max-width: 600px;
+  max-width: 700px;
   margin: 70px auto;
   padding: 50px;
   .content {
