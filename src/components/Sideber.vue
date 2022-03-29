@@ -31,7 +31,11 @@ watch(
   () => route.query,
   (n: any) => {
     isOpenFolderModal.value = false
-    if (!github_config?.owner && route.path != '/setting') {
+    if (
+      !github_config?.owner &&
+      route.path != '/setting' &&
+      route.path != '/about'
+    ) {
       router.push('/setting')
     } else if (route.query.reload) {
       GetFolders()
