@@ -21,7 +21,7 @@ import { ref } from 'vue'
       极具苛刻，这将是一个让您大吃一惊的好项目。<br /><br />
       特别的是
       <ul>
-        <li>拖拽图片上传</li>
+        <li>支持点击、拖拽、复制图片上传</li>
         <li>
           谷歌 <a href="https://squoosh.app" target="_blank">squoosh</a>
           压缩图片
@@ -40,8 +40,9 @@ import { ref } from 'vue'
 
 <style lang="scss" scoped>
 .about-wrapper {
-  max-width: 700px;
-  margin: 120px auto;
+  max-width: 600px;
+  margin: 70px auto;
+  padding: 50px;
   .content {
     margin-top: 20px;
     line-height: 30px;

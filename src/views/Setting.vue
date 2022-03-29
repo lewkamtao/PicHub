@@ -98,7 +98,11 @@ const Exit = () => {
 <template>
   <div class="main">
     <div class="form">
-      <div class="title">{{ token ? '设置' : '开始' }}</div>
+      <div v-if="!token" class="title">开始</div>
+      <div class="user-info">
+        <img class="avatar" :src="form.avatarUrl" alt="" srcset="" />
+        <div class="name">{{ form.name }}</div>
+      </div>
       <div class="form-item">
         <label>Github access token </label>
         <input type="text" v-model="token" placeholder="请输入" />
@@ -154,5 +158,25 @@ const Exit = () => {
   margin-bottom: 20px;
   color: var(--text-color-1);
   font-weight: bold;
+}
+
+.user-info {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  .avatar {
+    width: 120px;
+    border-radius: 50%;
+    border: 1px var(--border-color) solid;
+  }
+  .name {
+    margin-top: 5px;
+    font-size: 18px;
+    line-height: 32px;
+    color: var(--text-color);
+  }
 }
 </style>
