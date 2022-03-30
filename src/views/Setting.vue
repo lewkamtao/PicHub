@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Alert } from '../util/alert'
-import LewButton from '../components/base/LewButton.vue'
+import { LewButton, LewFormItem, LewInput, LewSelect } from '../components/base'
+
 import { GithubConfig } from '../model/github_config.model'
 
 import axios from '../axios/http'
@@ -8,16 +9,19 @@ import { onMounted, reactive, ref } from 'vue'
 onMounted(() => {
   if (!!localStorage.getItem('github_config')) {
     let github_config = JSON.parse(localStorage.getItem('github_config') as any)
-    form.value = github_config
+    user.value = github_config
+  } else {
+    user.value.repoId = ''
   }
   if (!!localStorage.getItem('token')) {
     token.value = localStorage.getItem('token')
+
     GetUser()
   }
 })
 
 const repos = ref([] as any)
-let form = ref({} as GithubConfig)
+let user = ref({} as GithubConfig)
 let token = ref('' as any)
 
 let loading_1 = ref(false)
@@ -31,10 +35,10 @@ const GetUser = () => {
       url: `/user`,
     })
     .then((res: any) => {
-      form.value.owner = res.data.login
-      form.value.name = res.data.name
-      form.value.avatarUrl = res.data.avatar_url
-      localStorage.setItem('github_config', JSON.stringify(form.value))
+      user.value.owner = res.data.login
+      user.value.name = res.data.name
+      user.value.avatarUrl = res.data.avatar_url
+      localStorage.setItem('github_config', JSON.stringify(user.value))
       GetRepos()
     })
     .catch(() => {
@@ -50,7 +54,7 @@ const SetToken = () => {
 const GetRepos = () => {
   axios
     .get({
-      url: `/users/${form.value.owner}/repos?type=public&sort=created&per_page=100`,
+      url: `/users/${user.value.owner}/repos?type=public&sort=created&per_page=100`,
     })
     .then((res: any) => {
       repos.value = res.data
@@ -59,7 +63,7 @@ const GetRepos = () => {
 }
 
 const Save = () => {
-  if (!form.value.repoId) {
+  if (!user.value.repoId) {
     Alert({
       type: 'warning',
       text: '请选择仓库',
@@ -67,8 +71,8 @@ const Save = () => {
     return
   }
   loading_2.value = true
-  form.value.repoPath = repos.value.find((e) => form.value.repoId == e.id).name
-  localStorage.setItem('github_config', JSON.stringify(form.value))
+  user.value.repoPath = repos.value.find((e) => user.value.repoId == e.id).name
+  localStorage.setItem('github_config', JSON.stringify(user.value))
 
   setTimeout(() => {
     Alert({
@@ -96,80 +100,77 @@ const Exit = () => {
 </script>
 
 <template>
-  <div class="main">
-    <div class="form">
-      <div v-if="!form.name" class="title">开始</div>
-      <div v-show="form.name" class="user-info">
-        <img class="avatar" :src="form.avatarUrl" alt="" srcset="" />
-        <div class="name">{{ form.name }}</div>
-      </div>
-      <div class="form-item">
-        <label
-          >Github access token
-          <a target="_blank" href="https://juejin.cn/post/6989307240633073700"
-            >如何获取？</a
-          >
-        </label>
-        <input type="text" v-model="token" placeholder="请输入" />
-        <p class="tips">
-          注意： <br />Pichub不会对你的 access token
-          进行储存和转移，它只会储存在你的本机的浏览器内，所以它是相对安全的。如果你试图去浏览器的缓存中清除掉它，你会发现，它需要重新登陆了，但我们不推荐这样操作。
-        </p>
-      </div>
-      <div class="form-item" v-show="repos.length > 0">
-        <label>选择一个 Github 仓库 </label>
-        <select v-model="form.repoId">
-          <option value="" hidden>请选择</option>
-          <option v-for="repo in repos" :value="repo.id" :key="repo.id">
-            {{ repo.name }}
-          </option>
-        </select>
-      </div>
-
-      <lew-button
-        type="primary"
-        v-show="repos.length == 0"
-        @click="SetToken()"
-        :loading="loading_1"
-      >
-        确定
-      </lew-button>
-
-      <lew-button
-        type="primary"
-        v-show="repos.length > 0"
-        @click="Save()"
-        :loading="loading_2"
-      >
-        保存配置
-      </lew-button>
-      <lew-button
-        type="danger"
-        v-show="repos.length > 0"
-        @click="Exit()"
-        :loading="loading_3"
-      >
-        退出登录
-      </lew-button>
+  <div class="form">
+    <div v-if="!user.name" class="title">开始</div>
+    <div v-show="user.name" class="user-info">
+      <img class="avatar" :src="user.avatarUrl" alt="" srcset="" />
+      <div class="name">{{ user.name }}</div>
     </div>
+    <div class="form">
+      <lew-form-item
+        title="Github access token"
+        sub_title="如何获取？"
+        sub_title_link="https://juejin.cn/post/6989307240633073700"
+        :tips="
+          repos.length == 0
+            ? `注意： <br />Pichub不会对你的 access token
+          进行储存和转移，它只会储存在你的本机的浏览器内，所以它是相对安全的。如果你试图去浏览器的缓存中清除掉它，你会发现，它需要重新登陆了，但我们不推荐这样操作。
+        `
+            : ''
+        "
+      >
+        <lew-input
+          :disabled="repos.length > 0"
+          v-model="token"
+          placeholder="请输入"
+        ></lew-input>
+      </lew-form-item>
+      <lew-form-item v-show="repos.length > 0" title="选择一个 Github 仓库">
+        <lew-select
+          v-model="user.repoId"
+          :option="repos"
+          label="name"
+          value="id"
+        ></lew-select>
+      </lew-form-item>
+    </div>
+
+    <lew-button
+      type="primary"
+      v-show="repos.length == 0"
+      @click="SetToken()"
+      :loading="loading_1"
+    >
+      确定
+    </lew-button>
+
+    <lew-button
+      type="primary"
+      v-show="repos.length > 0"
+      @click="Save()"
+      :loading="loading_2"
+    >
+      保存配置
+    </lew-button>
+    <lew-button
+      type="danger"
+      v-show="repos.length > 0"
+      @click="Exit()"
+      :loading="loading_3"
+    >
+      退出登录
+    </lew-button>
   </div>
 </template>
 <style></style>
 
 <style lang="scss" scoped>
-.main {
-  width: 100%;
-  background: var(--background-2);
-  min-height: 100vh;
-  .tips {
-    font-size: 12px;
-    color: #999;
-    padding: 10px;
-    line-height: 18px;
-  }
+.form {
+  width: 500px;
+  margin: 0px auto;
 }
 .title {
-  margin-top: 50px;
+  margin-top: 120px;
   margin-bottom: 20px;
   color: var(--text-color-1);
   font-weight: bold;
@@ -180,8 +181,7 @@ const Exit = () => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  padding: 20px;
+  padding: 20px 0px;
   .avatar {
     width: 120px;
     border-radius: 50%;
@@ -192,12 +192,6 @@ const Exit = () => {
     font-size: 18px;
     line-height: 32px;
     color: var(--text-color);
-  }
-}
-label {
-  a {
-    text-decoration: underline;
-    margin-left: 10px;
   }
 }
 </style>

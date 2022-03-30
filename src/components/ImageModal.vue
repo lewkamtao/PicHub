@@ -23,7 +23,7 @@ let history_list = ref<UploadImage[]>([]) // 历史列表
 watch(
   () => route.query,
   (n: any) => {
-    folder.value = n.folder
+    folder.value = n.folder || ''
   }
 )
 // 获取github配置

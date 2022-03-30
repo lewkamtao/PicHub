@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+
 const props = defineProps({
   modelValue: {
     // 父组件 v-model 没有指定参数名，则默认是 modelValue
-    type: String,
+    type: String || Number,
     default: '',
   },
-  disabled: {
-    type: Boolean,
-    default: false,
+  option: {
+    type: <any>Array,
+    default: [],
   },
+  label: { type: String || Number, default: '' },
+  value: { type: String || Number, default: '' },
 })
+
 const v = ref(props.modelValue)
 watch(
   () => props.modelValue,
@@ -20,18 +24,27 @@ watch(
 )
 const emit = defineEmits(['update:modelValue'])
 
-const input = (e) => {
+const change = (e) => {
   let { value } = e.target
   emit('update:modelValue', value)
 }
 </script>
 
 <template>
-  <input v-model="v" @input="input" :disabled="props.disabled" />
+  <select v-model="v" @change="change">
+    <option value="" hidden>请选择</option>
+    <option
+      v-for="item in props.option"
+      :value="item[value]"
+      :key="item[label]"
+    >
+      {{ item[label] }}
+    </option>
+  </select>
 </template>
 
 <style lang="scss" scoped>
-input {
+select {
   width: 100%;
   height: 45px;
   border-radius: 12px;
