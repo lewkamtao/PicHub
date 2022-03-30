@@ -10,6 +10,7 @@
 ## 简介
 
 一个基于 GitHub API & jsDelivr 开发的具有 CDN 加速功能的图床管理工具
+> https://pichub.tngeek.com/
 
 ## 特性
 
@@ -33,7 +34,13 @@ npm run dev
 npm run build
 ```
 
-
+## 截图
+![如果打不开，就是被墙了](https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/微信图片_20220330111032_jnf4ou_.jpg)
+![如果打不开，就是被墙了](https://raw.githubusercontent.com/lewkamtao/PicHub-Cloud/master/PicHub/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_202203301110324_6e6ahv_.jpg)
+![如果打不开，就是被墙了](https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/微信图片_202203301110323_dhnlh2_.jpg)
+![如果打不开，就是被墙了](https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/微信图片_202203301110324_6e6ahv_.jpg)
+![如果打不开，就是被墙了](https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/微信图片_20220330111032_macbookpro15_front.png)
+![如果打不开，就是被墙了](https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/微信图片_20220330111045_yj3dhp_.jpg)
 
 ## 反馈
 
