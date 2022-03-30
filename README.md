@@ -39,7 +39,7 @@ npm run build
 ![如果打不开，就是被墙了](https://raw.githubusercontent.com/lewkamtao/PicHub-Cloud/master/PicHub/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_202203301110324_6e6ahv_.jpg)
 ![如果打不开，就是被墙了](https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/微信图片_202203301110323_dhnlh2_.jpg)
 ![如果打不开，就是被墙了](https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/微信图片_202203301110324_6e6ahv_.jpg)
-![如果打不开，就是被墙了](https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/微信图片_20220330111045_yj3dhp_.jpg)
+
 
 ## 反馈
 
