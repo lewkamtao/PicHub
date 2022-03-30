@@ -109,9 +109,9 @@ const Exit = () => {
     <div class="form">
       <lew-form-item
         title="Github access token"
-        sub_title="如何获取？"
-        sub_title_link="https://juejin.cn/post/6989307240633073700"
-        :tips="
+        small_title="如何获取？"
+        small_title_link="https://juejin.cn/post/6989307240633073700"
+        :tips=" 
           repos.length == 0
             ? `注意： <br />Pichub不会对你的 access token
           进行储存和转移，它只会储存在你的本机的浏览器内，所以它是相对安全的。如果你试图去浏览器的缓存中清除掉它，你会发现，它需要重新登陆了，但我们不推荐这样操作。
