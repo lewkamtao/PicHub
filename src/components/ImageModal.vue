@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Alert } from '../util/alert'
 import axios from '../axios/http'
+
 import { uploadHelper } from '../util/uploadHelper'
 import { onMounted, watch, ref } from 'vue'
-import LewButton from './base/LewButton.vue'
+import { LewButton, LewSelect } from '../components/base'
+
 import { useRoute, useRouter } from 'vue-router'
 import { GithubConfig } from '../model/github_config.model'
 import { UploadImage } from '../model/upload_image.model'
@@ -15,7 +17,7 @@ const router = useRouter()
 const props = defineProps({ isOpen: Boolean, folders: Array as any })
 const emit = defineEmits(['close'])
 
-let folder = ref(route.query.folder) // 文件夹
+let folder: any = ref(route.query.folder) // 文件夹
 let upload_list = ref<UploadImage[]>([]) // 上传列表
 let history_list = ref<UploadImage[]>([]) // 历史列表
 
@@ -220,16 +222,12 @@ const GetCdnText = (url) => {
     </svg>
     <div class="select">
       <div class="title-3">选择文件夹</div>
-      <select v-model="folder">
-        <option value="" hidden>请选择</option>
-        <option
-          v-for="folder in props.folders"
-          :value="folder.name"
-          :key="folder.name"
-        >
-          {{ folder.name }}
-        </option>
-      </select>
+      <lew-select
+        v-model="folder"
+        :option="props.folders"
+        label="name"
+        value="name"
+      ></lew-select>
     </div>
 
     <div class="upload-list">
