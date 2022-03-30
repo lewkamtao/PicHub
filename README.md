@@ -4,7 +4,9 @@
 基于 [Vue3](https://vuejs.org/) + [Github API](https://docs.github.com/cn/rest/reference/repos#contents) 实现的个人图床
 
 [前往在线地址](https://pichub.tngeek.com/)
-
+  
+<img src="https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/positer.webp" width="200" alt="cantor" align=center />
+   
 </div>
 
 ---
