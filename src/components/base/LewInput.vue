@@ -40,5 +40,6 @@ input {
   font-size: 14px;
   line-height: 24px;
   box-sizing: border-box;
+  color: var(--text-color);
 }
 </style>
