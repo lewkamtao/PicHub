@@ -2,7 +2,8 @@
 import { Alert } from '../util/alert'
 import axios from '../axios/http'
 import { ref } from 'vue'
-import LewButton from './base/LewButton.vue'
+import { LewButton, LewInput, LewFormItem } from '../components/base'
+
 import { GithubConfig } from '../model/github_config.model'
 
 // github 本地配置
@@ -56,10 +57,9 @@ const AddForder = () => {
 
 <template>
   <div class="folder-modal" :class="{ isOpen: props.isOpen }">
-    <div class="form-item">
-      <label>文件夹名称 </label>
-      <input type="text" placeholder="请输入" v-model="forderName" />
-    </div>
+    <lew-form-item title="文件名">
+      <lew-input v-model="forderName" placeholder="请输入"></lew-input>
+    </lew-form-item>
     <div class="form-item btn-box">
       <lew-button @click="AddForder()" type="primary" :loading="loading">
         确认
@@ -78,7 +78,6 @@ const AddForder = () => {
   width: 200px;
   height: 170px;
   background: var(--background-2);
-  box-shadow: 220px 0px 220px rgba($color: #000, $alpha: 0.1);
   opacity: 1;
   padding: 7px;
   box-sizing: border-box;
