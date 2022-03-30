@@ -5,7 +5,7 @@
 
 [前往在线地址](https://pichub.tngeek.com/)
   
-<img src="https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/positer.webp" width="200" alt="cantor" align=center />
+<img src="https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/positer.webp"  alt="cantor" align=center />
    
 </div>
 
