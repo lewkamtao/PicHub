@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { Alert } from '../util/alert'
-import { LewButton, LewFormItem, LewInput, LewSelect } from '../components/base'
+import {
+  LewButton,
+  LewFormItem,
+  LewSwitch,
+  LewInput,
+  LewSelect,
+} from '../components/base'
 
 import { GithubConfig } from '../model/github_config.model'
 
@@ -21,7 +27,7 @@ onMounted(() => {
 })
 
 const repos = ref([] as any)
-let user = ref({} as GithubConfig)
+let user: any = ref({} as GithubConfig)
 let token = ref('' as any)
 
 let loading_1 = ref(false)
@@ -87,6 +93,8 @@ const Save = () => {
 const Exit = () => {
   localStorage.removeItem('token')
   localStorage.removeItem('github_config')
+  localStorage.removeItem('history_list')
+
   loading_3.value = true
   Alert({
     type: 'success',
@@ -96,6 +104,14 @@ const Exit = () => {
     loading_3.value = false
     location.reload()
   }, 500)
+}
+
+const changeDarkModel = (e) => {
+  if (e.target.checked) {
+    document.getElementsByTagName('html')[0].classList.add('dark')
+  } else {
+    document.getElementsByTagName('html')[0].classList.remove('dark')
+  }
 }
 </script>
 
@@ -111,7 +127,7 @@ const Exit = () => {
         title="Github access token"
         small_title="如何获取？"
         small_title_link="https://juejin.cn/post/6989307240633073700"
-        :tips=" 
+        :tips="
           repos.length == 0
             ? `注意： <br />Pichub不会对你的 access token
           进行储存和转移，它只会储存在你的本机的浏览器内，所以它是相对安全的。如果你试图去浏览器的缓存中清除掉它，你会发现，它需要重新登陆了，但我们不推荐这样操作。
@@ -134,6 +150,10 @@ const Exit = () => {
         ></lew-select>
       </lew-form-item>
     </div>
+
+    <lew-form-item direction="row" v-show="repos.length > 0" title="暗黑模式">
+      <lew-switch v-model="user.isDark" @change="changeDarkModel"></lew-switch>
+    </lew-form-item>
 
     <lew-button
       type="primary"
@@ -166,7 +186,7 @@ const Exit = () => {
 
 <style lang="scss" scoped>
 .form {
-  width: 500px;
+  width: 400px;
   margin: 0px auto;
 }
 .title {
@@ -177,13 +197,14 @@ const Exit = () => {
 }
 
 .user-info {
-  margin-top: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-top: 100px;
+  margin-bottom: 20px;
   padding: 20px 0px;
   .avatar {
-    width: 120px;
+    width: 150px;
     border-radius: 50%;
     border: 1px var(--border-color) solid;
   }
@@ -191,6 +212,7 @@ const Exit = () => {
     margin-top: 5px;
     font-size: 18px;
     line-height: 32px;
+    margin-left: 10px;
     color: var(--text-color);
   }
 }

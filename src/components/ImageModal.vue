@@ -4,7 +4,7 @@ import axios from '../axios/http'
 
 import { uploadHelper } from '../util/uploadHelper'
 import { onMounted, watch, ref } from 'vue'
-import { LewButton, LewSelect } from '../components/base'
+import { LewFormItem, LewButton, LewSelect } from '../components/base'
 
 import { useRoute, useRouter } from 'vue-router'
 import { GithubConfig } from '../model/github_config.model'
@@ -15,11 +15,11 @@ const route = useRoute()
 const router = useRouter()
 
 const props = defineProps({ isOpen: Boolean, folders: Array as any })
-const emit = defineEmits(['close'])
+const emit = defineEmits(['Close', 'SetLoading'])
 
 let folder: any = ref(route.query.folder) // 文件夹
 let upload_list = ref<UploadImage[]>([]) // 上传列表
-let history_list = ref<UploadImage[]>([]) // 历史列表
+let history_list: any = ref<UploadImage[]>([]) // 历史列表
 
 // 监听路由变化 改变 需要上传文件夹
 watch(
@@ -33,7 +33,10 @@ let github_config: GithubConfig = JSON.parse(
   localStorage.getItem('github_config') as any
 )
 
-let loading = ref(false) // 加载按钮
+let loading_btn: any = ref(null) // 加载按钮
+
+let loading_addupload = ref(false) // 加载按钮
+
 let drop_active = ref(false) // 拖拽状态
 
 onMounted(() => {
@@ -127,6 +130,11 @@ const ClickUpload = (e) => {
 
 // 添加图片到上传列表
 const AddImageToList = async (image_files) => {
+  loading_addupload.value = true
+  Alert({
+    type: 'warning',
+    text: '转码中',
+  })
   let upload_files: any = []
   upload_files = await Promise.all(
     [...image_files].map((e) => {
@@ -134,26 +142,33 @@ const AddImageToList = async (image_files) => {
       return uploadHelper(e, folder.value)
     })
   )
+  Alert({
+    type: 'success',
+    text: '转码完成',
+  })
+  loading_addupload.value = false
   upload_list.value = upload_list.value.concat(upload_files)
 }
 
 // 上传到github
-const Upload = async () => {
-  loading.value = true
+const Upload = async (type) => {
+  loading_btn.value = type
   let timer = 0
   await Promise.all(
     upload_list.value.map((e, i) => {
       upload_list.value[i].status = 'uploading'
       // 等待异步操作完成，返回执行结果
       return new Promise((resolve) => {
+        let filename = type == 1 ? `${e.name}_${e.ext}` : `${e.name}_.jpeg`
+
         setTimeout(() => {
           axios
             .put({
-              url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${folder.value}/${e.name}
+              url: `/repos/${github_config.owner}/${github_config.repoPath}/contents/${folder.value}/${filename}
           `,
               data: {
                 message: 'upload a image by pichub',
-                content: e.base64data,
+                content: type == 1 ? e.orginal_base64data : e.base64data,
               },
             })
             .then((res: any) => {
@@ -164,8 +179,9 @@ const Upload = async () => {
               e.download_url = image.download_url
               e.git_url = image.git_url
               e.sha = image.sha
+              e.upload_type = type
               e.html_url = image.html_url
-              history_list.value.unshift(e)
+              addHistory(e)
               resolve(200)
             })
             .catch(() => {
@@ -182,11 +198,23 @@ const Upload = async () => {
     text: '上传完成',
   })
 
+  loading_btn.value = 0
   upload_list.value = upload_list.value.filter((e) => e.status != 'success')
-  loading.value = false
-  localStorage.setItem('history_list', JSON.stringify(history_list.value))
-
   router.push((route.fullPath += '&t=' + new Date().getTime()) as any)
+  localStorage.setItem('history_list', JSON.stringify(history_list.value))
+}
+
+const addHistory = (e: any) => {
+  let item = {
+    name: e.name,
+    orginal_size: e.orginal_size,
+    compress_size: e.compress_size,
+    base64: e.base64,
+    folder: e.folder,
+    status: e.status,
+    ext: e.ext,
+  }
+  history_list.value.unshift(item)
 }
 
 // 设置复制markdown
@@ -209,7 +237,7 @@ const GetCdnText = (url) => {
     :class="{ isOpen: props.isOpen }"
   >
     <svg
-      @click="emit('close')"
+      @click="emit('Close')"
       class="icon-close"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -221,17 +249,24 @@ const GetCdnText = (url) => {
       ></path>
     </svg>
     <div class="select">
-      <div class="title-3">选择文件夹</div>
-      <lew-select
-        v-model="folder"
-        :option="props.folders"
-        label="name"
-        value="name"
-      ></lew-select>
+      <LewFormItem title="选择文件夹">
+        <lew-select
+          v-model="folder"
+          :option="props.folders"
+          label="name"
+          value="name"
+        ></lew-select
+      ></LewFormItem>
     </div>
 
     <div class="upload-list">
-      <label class="upload-box" :class="drop_active ? 'drop-active' : ''">
+      <label
+        class="upload-box"
+        :class="
+          (drop_active ? 'drop-active' : '',
+          loading_addupload ? 'upload-box-loading' : '')
+        "
+      >
         <svg
           class="upload-icon"
           xmlns="http://www.w3.org/2000/svg"
@@ -322,7 +357,7 @@ const GetCdnText = (url) => {
 
         <div class="info">
           <div class="name">
-            {{ item.name }}
+            {{ `${item.name}_.jpeg` }}
           </div>
           <div class="tag-box">
             <span class="tag folder">{{ item.folder }}</span>
@@ -337,19 +372,31 @@ const GetCdnText = (url) => {
         <img :src="item.base64" class="image" />
       </div>
     </div>
-    <LewButton
-      @click="Upload"
-      v-show="upload_list.length > 0"
-      type="primary"
-      :loading="loading"
-      >开始上传</LewButton
-    >
-    <LewButton
-      @click="upload_list = []"
-      v-show="upload_list.length > 0"
-      type="danger"
-      >清空列表</LewButton
-    >
+    <div class="btn-box">
+      <LewButton
+        style="width: 220px"
+        @click="upload_list = []"
+        v-show="upload_list.length > 0"
+        type="danger"
+        >清空列表</LewButton
+      >
+      <LewButton
+        @click="Upload(1)"
+        type="warning"
+        style="width: 220px"
+        v-show="upload_list.length > 0"
+        :loading="loading_btn == 1"
+        >原图上传</LewButton
+      >
+      <LewButton
+        @click="Upload(2)"
+        v-show="upload_list.length > 0"
+        type="primary"
+        :loading="loading_btn == 2"
+        >开始上传</LewButton
+      >
+    </div>
+
     <div v-show="history_list?.length > 0" class="upload-list">
       <div class="title-3">上传历史</div>
       <div v-for="item in history_list" :key="item.name" class="item">
@@ -398,7 +445,11 @@ const GetCdnText = (url) => {
         </div>
         <div class="info">
           <div class="name">
-            {{ item.name }}
+            {{
+              item?.upload_type == 1
+                ? `${item.name}_${item.ext}`
+                : `${item.name}_.jpeg`
+            }}
           </div>
           <div class="tag-box">
             <span class="tag folder">{{ item.folder }}</span>
@@ -446,6 +497,16 @@ const GetCdnText = (url) => {
   box-sizing: border-box;
   overflow-y: scroll;
   transition: all 0.25s;
+  .btn-box {
+    display: flex;
+
+    button {
+      margin-right: 7px;
+    }
+    button:last-child {
+      margin-right: 0px;
+    }
+  }
   .icon-close {
     position: absolute;
     right: 0;
@@ -456,10 +517,12 @@ const GetCdnText = (url) => {
     cursor: pointer;
   }
   .upload-box {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
     width: 100%;
     color: #999;
     background: var(--background);
@@ -475,6 +538,35 @@ const GetCdnText = (url) => {
       height: 80px;
       margin-bottom: 10px;
     }
+  }
+
+  .upload-box::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    content: '';
+    border: 4px solid rgba(194, 194, 194, 0.4);
+    border-left-color: var(--primary-color);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+    animation: donut-spin 0.8s linear infinite;
+    transition: all 0.15s;
+    transform: translate(-50%, -50%);
+    outline: var(--background) solid 10000px;
+    background: var(--background);
+  }
+  @keyframes donut-spin {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+  .upload-box-loading::after {
+    opacity: 1;
   }
   .drop-active {
     border: 3px dashed var(--primary-color);
@@ -493,6 +585,8 @@ const GetCdnText = (url) => {
   .title-3 {
     margin-bottom: 10px;
     margin-top: 30px;
+    margin-left: 10px;
+    color: var(--text-color);
   }
   .select .title-3 {
     margin-top: 10px;
@@ -560,6 +654,7 @@ const GetCdnText = (url) => {
         .name {
           position: relative;
           width: calc(100% - 20px);
+          color: var(--text-color);
           font-size: 14px;
           white-space: nowrap;
           text-overflow: ellipsis;
@@ -573,6 +668,7 @@ const GetCdnText = (url) => {
             background: var(--background-2);
             border-radius: 2px;
             font-size: 12px;
+            color: var(--text-color);
           }
           .orginal-size {
             text-decoration: line-through;

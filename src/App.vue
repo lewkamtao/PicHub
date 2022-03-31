@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Sideber from './components/Sideber.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 let isOpenImageModal = ref(false)
 let isLoading = ref(false)
@@ -17,12 +17,26 @@ const sideberRef: any = ref(null)
 const OpenUploadModel = () => {
   sideberRef.value.changeImageModel()
 }
+
+onMounted(() => {
+  if (!!localStorage.getItem('github_config')) {
+    let github_config = JSON.parse(localStorage.getItem('github_config') as any)
+    if (github_config.isDark) {
+      document.getElementsByTagName('html')[0].classList.add('dark')
+    } else {
+      document.getElementsByTagName('html')[0].classList.remove('dark')
+    }
+  }
+})
 </script>
 
 <template>
   <div class="wrapper">
     <div id="alert-box"></div>
-    <Sideber @SetImageModal="SetImageModal" ref="sideberRef"></Sideber>
+    <Sideber
+      @SetImageModal="SetImageModal"
+      ref="sideberRef"
+    ></Sideber>
     <div
       class="main"
       :class="{ loading: isLoading }"
@@ -57,8 +71,8 @@ const OpenUploadModel = () => {
     border: 4px solid rgba(180, 180, 180, 0.4);
     border-left-color: var(--primary-color);
     border-radius: 50%;
-    outline: #eee solid 10000px;
-    background: #eee;
+    outline: var(--background) solid 10000px;
+    background: var(--background);
     width: 16px;
     height: 16px;
     opacity: 0;

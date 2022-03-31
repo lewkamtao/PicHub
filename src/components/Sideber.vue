@@ -73,8 +73,8 @@ const changeImageModel = () => {
   if (!github_config?.repoId) {
     Alert({
       type: 'danger',
-      text: '请前往设置，完成配置信息', 
-    }) 
+      text: '请前往设置，完成配置信息',
+    })
     return
   }
   isOpenImageModal.value = !isOpenImageModal.value
@@ -136,7 +136,7 @@ defineExpose({
     <image-modal
       :isOpen="isOpenImageModal"
       :folders="folders"
-      @close="changeImageModel"
+      @Close="changeImageModel"
     ></image-modal>
   </div>
 </template>

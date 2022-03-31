@@ -43,8 +43,10 @@ import { ref } from 'vue'
   max-width: 700px;
   margin: 70px auto;
   padding: 50px;
+  color: var(--text-color);
   .content {
     margin-top: 20px;
+    color: var(--text-color);
     line-height: 30px;
     a {
       color: var(--primary-color);

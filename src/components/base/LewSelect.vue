@@ -50,8 +50,11 @@ select {
   border-radius: 12px;
   padding: 5px 10px;
   border: 1px solid var(--border-color);
+  background: var(--background-3);
+  color: var(--text-color);
   font-size: 14px;
   line-height: 24px;
   box-sizing: border-box;
 }
+
 </style>

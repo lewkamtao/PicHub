@@ -4,4 +4,5 @@ export interface GithubConfig {
   repoPath: string
   name: string
   avatarUrl: string
+  isDark: Boolean
 }

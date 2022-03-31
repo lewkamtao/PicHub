@@ -248,7 +248,7 @@ defineExpose({
     align-content: flex-start;
     padding: 15px;
     grid-gap: 15px;
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 73px);
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     list-style: none;
     .item {
@@ -296,7 +296,7 @@ defineExpose({
         width: 20px;
         height: 20px;
         border-radius: 50px;
-        background: rgba($color: #d34343, $alpha: 0.15);
+        background: rgba($color: #d34343, $alpha: 0.25);
         opacity: 0;
         transition: all 0.1s;
         border: 1px rgba($color: #d34343, $alpha: 0.25) solid;
@@ -306,10 +306,10 @@ defineExpose({
         height: 2px;
         content: '';
         border-radius: 1px;
-        background: rgba(190, 84, 84, 0.8);
+        background: rgba(175, 71, 71, 0.8);
       }
       .del:hover {
-        background: rgba($color: #d34343, $alpha: 0.35);
+        background: rgba($color: #d34343, $alpha: 0.55);
       }
       .del:hover::after {
         background: rgba(190, 84, 84, 1);
@@ -336,7 +336,7 @@ defineExpose({
             margin: 0px 3px;
             height: 20px;
             line-height: 20px;
-            background: #eee;
+            background: var(--background-3);
             border: 1px var(--border-color) solid;
           }
           span:hover {

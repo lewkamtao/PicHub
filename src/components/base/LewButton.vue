@@ -35,6 +35,7 @@ const props = defineProps({
   font-size: 14px;
   border: none;
   cursor: pointer;
+  color: var(--text-color);
 }
 .button::before {
   position: absolute;
@@ -79,7 +80,6 @@ const props = defineProps({
 }
 .button-warning:hover {
   background-color: var(--warning-color-2);
-  color: var(--invert-text-color);
 }
 .button-primary:hover {
   background-color: var(--primary-color-2);
@@ -118,6 +118,4 @@ const props = defineProps({
 .button-loading::after {
   opacity: 1;
 }
-
-
 </style>

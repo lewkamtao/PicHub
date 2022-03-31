@@ -18,16 +18,23 @@ const uploadHelper = (file, folder) => {
     })
     const compressFile = await compress.process()
     const base64File: any = await fileByBase64(compressFile)
+    const orginal_base64: any = await fileByBase64(file)
+
     resolve({
-      name: `${file.name.substring(
-        0,
-        file.name.lastIndexOf('.')
-      )}_${createHash(6)}_.jpg`,
+      name: `${file.name.substring(0, file.name.lastIndexOf('.'))}_${createHash(
+        6
+      )}`,
       orginal_size: file.size,
       compress_size: compressFile.size,
-      base64data: base64File.replace('data:image/jpeg;base64,', ''),
+      base64data: base64File.replace(/^data:image\/\w+;base64,/, ''),
       base64: base64File,
+      orginal_base64data: orginal_base64.replace(
+        /^data:image\/\w+;base64,/,
+        ''
+      ),
+      orginal_base64: orginal_base64,
       folder: folder,
+      ext: getFileExtendingName(file.name),
     })
   })
 }
@@ -45,6 +52,20 @@ const fileByBase64 = (file) => {
       resolve(e.target.result)
     }
   })
+}
+
+/**
+ * 获取文件扩展名
+ * @param {String} filename 文件流
+ */
+function getFileExtendingName(filename) {
+  // 文件扩展名匹配正则
+  var reg = /\.[^\.]+$/
+  var matches = reg.exec(filename)
+  if (matches) {
+    return matches[0]
+  }
+  return ''
 }
 
 function createHash(hashLength) {

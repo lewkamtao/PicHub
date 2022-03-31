@@ -4,6 +4,10 @@ const props = defineProps({
     type: String,
     default: '标题',
   },
+  direction: {
+    type: String,
+    default: '',
+  },
   small_title: {
     type: String,
     default: '',
@@ -20,7 +24,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="form-item">
+  <div class="form-item" :class="{ isRow: props.direction == 'row' }">
     <label
       >{{ props.title }}
       <a
@@ -30,8 +34,10 @@ const props = defineProps({
         >{{ props.small_title }}</a
       ></label
     >
-    <slot />
-    <p class="tips" v-if="tips" v-html="tips"></p>
+    <div>
+      <slot />
+      <p class="tips" v-if="tips" v-html="tips"></p>
+    </div>
   </div>
 </template>
 
@@ -47,13 +53,23 @@ const props = defineProps({
     a {
       text-decoration: underline;
       margin-left: 10px;
+      color: var(--text-color-2);
     }
   }
   .tips {
     font-size: 12px;
-    color: #999;
+    color: var(--text-color-2);
     padding: 10px;
     line-height: 18px;
+  }
+}
+.isRow {
+  display: flex;
+  align-items: center;
+  label {
+    width: auto;
+    padding-right: 10px;
+    display: inline-block;
   }
 }
 </style>
