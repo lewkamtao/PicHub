@@ -262,10 +262,10 @@ const GetCdnText = (url) => {
     <div class="upload-list">
       <label
         class="upload-box"
-        :class="
-          (drop_active ? 'drop-active' : '',
-          loading_addupload ? 'upload-box-loading' : '')
-        "
+        :class="{
+          dropActive: drop_active,
+          uploadBoxLoading: loading_addupload,
+        }"
       >
         <svg
           class="upload-icon"
@@ -565,10 +565,10 @@ const GetCdnText = (url) => {
       transform: translate(-50%, -50%) rotate(360deg);
     }
   }
-  .upload-box-loading::after {
+  .uploadboxLoading::after {
     opacity: 1;
   }
-  .drop-active {
+  .dropActive {
     border: 3px dashed var(--primary-color);
     color: var(--primary-color);
     .upload-icon {
