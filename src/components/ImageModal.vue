@@ -565,7 +565,7 @@ const GetCdnText = (url) => {
       transform: translate(-50%, -50%) rotate(360deg);
     }
   }
-  .uploadboxLoading::after {
+  .uploadBoxLoading::after {
     opacity: 1;
   }
   .dropActive {
