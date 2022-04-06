@@ -288,7 +288,7 @@ defineExpose({
       }
       .del {
         position: absolute;
-        right: 5px;
+        left: 5px;
         top: 5px;
         display: flex;
         justify-content: center;
