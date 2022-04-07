@@ -258,7 +258,7 @@ defineExpose({
       background: var(--background-2);
       margin-bottom: 0px;
       border-radius: 12px;
-      border: 1px rgba(247, 245, 245, 0) solid;
+      border: var(--border-width) rgba(247, 245, 245, 0) solid;
       overflow: hidden;
       cursor: pointer;
       .name {
@@ -299,13 +299,13 @@ defineExpose({
         background: rgba($color: #d34343, $alpha: 0.25);
         opacity: 0;
         transition: all 0.1s;
-        border: 1px rgba($color: #d34343, $alpha: 0.25) solid;
+        border: var(--border-width) rgba($color: #d34343, $alpha: 0.25) solid;
       }
       .del::after {
         width: 12px;
         height: 2px;
         content: '';
-        border-radius: 1px;
+        border-radius: var(--border-width);
         background: rgba(175, 71, 71, 0.8);
       }
       .del:hover {
@@ -337,10 +337,10 @@ defineExpose({
             height: 20px;
             line-height: 20px;
             background: var(--background-3);
-            border: 1px var(--border-color) solid;
+            border: var(--border-width) var(--border-color) solid;
           }
           span:hover {
-            border: 1px var(--invert-background) solid;
+            border: var(--border-width) var(--invert-background) solid;
             background: var(--invert-background);
             color: var(--invert-text-color);
           }
@@ -348,7 +348,7 @@ defineExpose({
       }
     }
     .item:hover {
-      border: 1px var(--border-color) solid;
+      border: var(--border-width) var(--border-color) solid;
       .image {
         top: calc(50% - 20px);
       }
@@ -381,7 +381,7 @@ defineExpose({
     font-size: 14px;
     text-align: center;
     color: var(--text-color-2);
-    border-top: 1px var(--border-color) solid;
+    border-top: var(--border-width) var(--border-color) solid;
     background: var(--background);
   }
   .not-found {

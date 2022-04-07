@@ -206,7 +206,7 @@ const changeDarkModel = (e) => {
   .avatar {
     width: 150px;
     border-radius: 50%;
-    border: 1px var(--border-color) solid;
+    border: var(--border-width) var(--border-color) solid;
   }
   .name {
     margin-top: 5px;

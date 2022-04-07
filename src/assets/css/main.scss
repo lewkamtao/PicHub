@@ -32,7 +32,7 @@
         font-size: 14px;
         border-radius: 7px;
         box-sizing: border-box;
-        border: 1px rgb(230, 230, 230) solid;
+        border: var(--border-width) rgb(230, 230, 230) solid;
         margin-bottom: 10px;
     }
     .alert-danger {
@@ -63,21 +63,26 @@
     }
 }
 
-.title {
+.title-1 {
     font-size: 26px;
     font-weight: bold;
+    color: var(--text-color);
 }
 
 .title-2 {
     font-size: 22px;
-}
-
-.title-2 {
-    font-size: 18px;
+    color: var(--text-color);
 }
 
 .title-3 {
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.title-label {
+    margin: 0px 0px 5px 10px;
     font-size: 14px;
+    color: var(--text-color-2);
 }
 
 input,

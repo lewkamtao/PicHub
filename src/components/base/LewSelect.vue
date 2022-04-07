@@ -49,7 +49,7 @@ select {
   height: 45px;
   border-radius: 12px;
   padding: 5px 10px;
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   background: var(--background-3);
   color: var(--text-color);
   font-size: 14px;

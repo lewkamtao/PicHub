@@ -19,6 +19,13 @@
             z-index: 99;
             top: 0;
             right: 0;
+            transform: scale(0.5);
+            opacity: 0.1;
+            transition: all 0.25s;
+        }
+        
+        .github-corner:hover {
+            opacity: 1;
         }
         
         .github-corner:hover .octo-arm {
@@ -54,79 +61,27 @@
 </body>
 <script>
     Fancybox.bind('[data-fancybox="gallery"]', {
-        Toolbar: {
-            display: [{
-                    id: "counter",
-                    position: "center",
-                },
-                "zoom",
-                "slideshow",
-                "fullscreen",
-                "thumbs",
-                "close",
-            ],
+        dragToClose: false,
+        Toolbar: false,
+        closeButton: "top",
+        Image: {},
 
-        },
         on: {
-            initLayout: (fancybox) => {
-                // Create elements
-                // ===
+            initCarousel: (fancybox) => {
+                const slide = fancybox.Carousel.slides[fancybox.Carousel.page];
 
-                // Create left column
-                const $leftCol = document.createElement("div");
-                $leftCol.classList.add("fancybox__leftCol");
-
-                while (fancybox.$container.firstChild) {
-                    $leftCol.appendChild(fancybox.$container.firstChild);
-                }
-
-                // Create right column
-                const $rightCol = document.createElement("div");
-                $rightCol.classList.add("fancybox__rightCol");
-
-                function stopDefault(e) {
-                    if (e && e.preventDefault)
-                        e.preventDefault(); // W3C
-                    else
-                        window.event.returnValue = false; // Old IE
-                }
-                $rightCol.onclick = (e) => {
-                    stopDefault(e);
-
-                }
-
-                // Create info-box
-                const $info = document.createElement("div");
-                $rightCol.appendChild($info);
-                fancybox.$info = $info;
-
-                // Add elements to DOM
-                fancybox.$container.appendChild(fancybox.$backdrop);
-
-                fancybox.$container.appendChild($leftCol);
-                fancybox.$container.appendChild($rightCol);
-
-                fancybox.$leftCol = $leftCol;
-                fancybox.$rightCol = $rightCol;
-
-
-
+                fancybox.$container.style.setProperty(
+                    "--bg-image",
+                    `url("${slide.$thumb.src}")`
+                );
             },
-            "Carousel.ready Carousel.change": (fancybox, carousel, slideIndex) => {
-                // Update info-box
-                // ===
+            "Carousel.change": (fancybox, carousel, to, from) => {
+                const slide = carousel.slides[to];
 
-                // Get index of the current gallery item
-                slideIndex = slideIndex || carousel.options.initialPage;
-
-                // Get link related to current item
-                const $trigger = fancybox.items[slideIndex].$trigger;
-
-                // Get data from `data-info` attribute
-                const data = $trigger.dataset.info || "";
-
-                // Update info
-                fancybox.$info.innerHTML = `<p>${data}</p>`;
+                fancybox.$container.style.setProperty(
+                    "--bg-image",
+                    `url("${slide.$thumb.src}")`
+                );
             },
         },
     });

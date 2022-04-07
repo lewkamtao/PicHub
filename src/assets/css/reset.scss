@@ -78,13 +78,13 @@ i {
 }
 
 table caption {
-    margin-left: -1px;
+    margin-left: -var(--border-width);
 }
 
 hr {
-    border-bottom: 1px solid #ffffff;
-    border-top: 1px solid #e4e4e4;
-    border-width: 1px 0;
+    border-bottom: var(--border-width) solid #ffffff;
+    border-top: var(--border-width) solid #e4e4e4;
+    border-width: var(--border-width) 0;
     clear: both;
     height: 2px;
     margin: 5px 0;

@@ -68,6 +68,13 @@ onMounted(() => {
 
 // 拖拽上传
 const DropUpload = (e) => {
+  if (!!!folder.value) {
+    Alert({
+      type: 'danger',
+      text: '请选择文件夹',
+    })
+    return
+  }
   let files = e.dataTransfer.files
   drop_active.value = false
   e.stopPropagation()
@@ -91,6 +98,13 @@ const DropUpload = (e) => {
 
 // 监听粘贴操作
 const PasteUpload = (e) => {
+  if (!!!folder.value) {
+    Alert({
+      type: 'danger',
+      text: '请选择文件夹',
+    })
+    return
+  }
   const items = e.clipboardData.items //  获取剪贴板中的数据
   let files: any = null //  用来保存 files 对象
   if (items.length > 0) {
@@ -125,6 +139,7 @@ const ClickUpload = (e) => {
     return
   }
   let files = e.target.files
+
   AddImageToList(files)
 }
 
@@ -142,6 +157,7 @@ const AddImageToList = async (image_files) => {
       return uploadHelper(e, folder.value)
     })
   )
+  console.log(upload_files)
   Alert({
     type: 'success',
     text: '转码完成',
@@ -309,7 +325,7 @@ const GetCdnText = (url) => {
           multiple
         />
       </label>
-      <div v-show="upload_list.length > 0" class="title-3">待上传图片</div>
+      <div v-show="upload_list.length > 0" class="title-label">待上传图片</div>
       <div v-for="item in upload_list" :key="item.name" class="item">
         <div class="status-box">
           <svg
@@ -398,7 +414,7 @@ const GetCdnText = (url) => {
     </div>
 
     <div v-show="history_list?.length > 0" class="upload-list">
-      <div class="title-3">上传历史</div>
+      <div class="title-label">上传历史</div>
       <div v-for="item in history_list" :key="item.name" class="item">
         <div class="status-box">
           <svg
@@ -486,12 +502,13 @@ const GetCdnText = (url) => {
 <style lang="scss" scoped>
 .image-modal {
   position: fixed;
-  left: -300px;
+  left: 0px;
   z-index: 9;
+  transform: translateX(-300px);
   width: 500px;
   height: 100vh;
   background: var(--background-2);
-  border-right: 1px var(--border-color) solid;
+  border-right: var(--border-width) var(--border-color) solid;
   box-sizing: border-box;
   padding: 28px 14px;
   box-sizing: border-box;
@@ -514,7 +531,18 @@ const GetCdnText = (url) => {
     width: 24px;
     height: 24px;
     padding: 12px;
+    opacity: 0.4;
+    transform: scale(1);
     cursor: pointer;
+    transition: all 0.15s;
+  }
+  .icon-close:hover {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+  .icon-close:active {
+    opacity: 1;
+    transform: scale(1);
   }
   .upload-box {
     position: relative;
@@ -582,15 +610,11 @@ const GetCdnText = (url) => {
       color: var(--primary-color);
     }
   }
-  .title-3 {
+  .title-label {
     margin-bottom: 10px;
     margin-top: 30px;
-    margin-left: 10px;
-    color: var(--text-color);
   }
-  .select .title-3 {
-    margin-top: 10px;
-  }
+
   .upload-list {
     .item {
       position: relative;
@@ -602,7 +626,7 @@ const GetCdnText = (url) => {
       width: 100%;
       height: 70px;
       box-sizing: border-box;
-      border: 1px solid var(--border-color);
+      border: var(--border-width) solid var(--border-color);
       padding: 10px;
       overflow: hidden;
 
@@ -644,12 +668,13 @@ const GetCdnText = (url) => {
         height: 100%;
         object-fit: cover;
         border-radius: 7px;
-        border: 1px solid var(--border-color);
+        border: var(--border-width) solid var(--border-color);
       }
 
       .info {
         margin-right: 10px;
-        width: calc(100% - 60px);
+        margin-left: 3px;
+        width: calc(100% - 70px);
 
         .name {
           position: relative;
@@ -690,6 +715,6 @@ const GetCdnText = (url) => {
   }
 }
 .isOpen {
-  left: 200px;
+  transform: translateX(200px);
 }
 </style>

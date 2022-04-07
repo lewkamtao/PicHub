@@ -95,6 +95,7 @@ defineExpose({
       </div>
       <!-- 文件夹列表 -->
       <div class="folder">
+        <div v-if="folders.length > 0" class="title-3">文件夹</div>
         <a
           v-for="(item, index) in folders"
           :key="index"
@@ -160,14 +161,14 @@ defineExpose({
 <style lang="scss" scoped>
 .sidebar {
   width: 200px;
-  border-right: 1px var(--border-color) solid;
+  border-right: var(--border-width) var(--border-color) solid;
   box-sizing: border-box;
   height: 100vh;
   overflow-y: scroll;
   z-index: 99;
+  background-color: var(--background);
   .header {
     position: fixed;
-    left: -1px;
     height: 70px;
     width: 200px;
     display: flex;
@@ -175,7 +176,9 @@ defineExpose({
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
-    border-bottom: 1px var(--border-color) solid;
+    border-right: var(--border-width) var(--border-color) solid;
+    border-bottom: var(--border-width) var(--border-color) solid;
+
     .mask {
       position: absolute;
       left: 0px;
@@ -205,27 +208,32 @@ defineExpose({
     padding-bottom: calc(45px * 4 + 38px);
     background: var(--background);
     min-height: calc(100vh - 400px);
+    padding: 7px;
+    box-sizing: border-box;
+    .title-3 {
+      font-weight: bold;
+      padding: 14px;
+    }
     .item {
       position: relative;
       display: flex;
       align-items: center;
-      height: 50px;
+      height: 45px;
       line-height: 50px;
       box-sizing: border-box;
       padding: 0px 20px;
-      width: 200px;
+      width: 100%;
       white-space: nowrap;
+      border-radius: 12px;
       text-overflow: ellipsis;
       overflow: hidden;
-      transition: all 0.1s;
       color: var(--text-color-2);
       cursor: pointer;
-      border-bottom: 1px var(--border-color) solid;
       .status-point {
-        width: 8px;
-        height: 8px;
-        margin-left: 10px;
-        border-radius: 8px;
+        width: 10px;
+        height: 10px;
+        margin-left: 12px;
+        border-radius: 10px;
         display: inline-block;
         background: #27c24c;
         transition: opacity 0.25s;
@@ -243,8 +251,7 @@ defineExpose({
     }
     .item:last-child {
       justify-content: center;
-      opacity: 0.5;
-      font-size: 12px;
+      font-size: 14px;
     }
     .item:last-child:hover {
       color: var(--text-color-2);
@@ -255,10 +262,10 @@ defineExpose({
     width: 200px;
     height: calc(45px * 4 + 38px);
     position: fixed;
-    left: -1px;
     bottom: 0px;
     background: var(--background-2);
-    border-top: 1px var(--border-color) solid;
+    border-top: var(--border-width) var(--border-color) solid;
+    border-right: var(--border-width) var(--border-color) solid;
     padding: 7px;
     box-sizing: border-box;
     z-index: 99;

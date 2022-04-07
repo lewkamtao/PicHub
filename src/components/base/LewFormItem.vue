@@ -25,7 +25,7 @@ const props = defineProps({
 
 <template>
   <div class="form-item" :class="{ isRow: props.direction == 'row' }">
-    <label
+    <label class="title-label"
       >{{ props.title }}
       <a
         v-if="props.small_title"
@@ -49,7 +49,6 @@ const props = defineProps({
     display: block;
     width: 100%;
     margin: 0px 0px 5px 10px;
-    color: var(--text-color-2);
     a {
       text-decoration: underline;
       margin-left: 10px;

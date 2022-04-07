@@ -72,7 +72,7 @@ const AddForder = () => {
 <style lang="scss" scoped>
 .folder-modal {
   position: absolute;
-  left: -1px;
+  left: -var(--border-width);
   bottom: 40px;
   z-index: 9;
   width: 200px;
@@ -81,7 +81,7 @@ const AddForder = () => {
   opacity: 1;
   padding: 7px;
   box-sizing: border-box;
-  border-top: 1px var(--border-color) solid;
+  border-top: var(--border-width) var(--border-color) solid;
   transition: all 0.25s;
 }
 .isOpen {

@@ -4,7 +4,7 @@ import { ref } from 'vue'
 
 <template>
   <div class="about-wrapper">
-    <div class="title">关于</div>
+    <div class="title-1">关于</div>
     <div class="content">
       我是广州的前端工程师<a target="_blank" href="https://blog.kamtao.com/">
         Kamtao</a
