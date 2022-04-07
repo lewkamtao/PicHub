@@ -2,12 +2,13 @@
 <img src="https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/logo.png" width="200" alt="cantor" align=center />
 
 基于 [Vue3](https://vuejs.org/) + [Github API](https://docs.github.com/cn/rest/reference/repos#contents) 实现的个人图床
-[![HitCount](https://hits.dwyl.com/lewkamtao/PicHub.svg?style=flat-square)](http://hits.dwyl.com/lewkamtao/PicHub)
+
 
 [前往在线地址](https://pichub.tngeek.com/)
 </div>
 <img src="https://cdn.jsdelivr.net/gh/lewkamtao/PicHub-Cloud@master/PicHub/posi.webp"  />   
 ---
+[![HitCount](https://hits.dwyl.com/lewkamtao/PicHub.svg?style=flat-square)](http://hits.dwyl.com/lewkamtao/PicHub)
 
 ## 简介
 
