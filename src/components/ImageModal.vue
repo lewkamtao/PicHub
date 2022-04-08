@@ -33,7 +33,9 @@ watch(
 watch(
   () => folder.value,
   (n: any) => {
-    router.push(`/?folder=${n}`)
+    if (route.path != '/setting') {
+      router.push(`/?folder=${n}`)
+    }
   }
 )
 

@@ -33,10 +33,7 @@ onMounted(() => {
 <template>
   <div class="wrapper">
     <div id="alert-box"></div>
-    <Sideber
-      @SetImageModal="SetImageModal"
-      ref="sideberRef"
-    ></Sideber>
+    <Sideber @SetImageModal="SetImageModal" ref="sideberRef"></Sideber>
     <div
       class="main"
       :class="{ loading: isLoading }"

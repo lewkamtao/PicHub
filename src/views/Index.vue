@@ -184,7 +184,7 @@ defineExpose({
     </div>
 
     <div v-show="images.length > 0" class="list">
-      <div v-for="(item, index) in images" :key="index" class="item">
+      <div v-for="item in images" :key="`${item.name}`" class="item">
         <div @click="DeleteImage(item)" class="del"></div>
         <a
           class="image"

@@ -20,6 +20,7 @@ let github_config: GithubConfig = JSON.parse(
 let folders = ref([] as any)
 let isOpenImageModal = ref(false)
 let isOpenFolderModal = ref(false)
+let loading = ref(false)
 
 onMounted(() => {
   if (github_config?.repoId) {
@@ -55,6 +56,7 @@ watch(
 )
 
 const GetFolders = () => {
+  loading.value = true
   axios
     .get({
       url: `/repositories/${
@@ -62,10 +64,14 @@ const GetFolders = () => {
       }/contents?t=${new Date().getTime()}`,
     })
     .then((res: any) => {
+      loading.value = false
       folders.value = res.data.filter((e) => e.type == 'dir')
       if (route.path == '/' && !route.query.folder) {
         router.push(`/?folder=${folders.value[0].name}`)
       }
+    })
+    .catch(() => {
+      loading.value = false
     })
 }
 
@@ -94,7 +100,7 @@ defineExpose({
         <div class="logo">Pic<span>Hub</span></div>
       </div>
       <!-- 文件夹列表 -->
-      <div class="folder">
+      <div class="folder" :class="{ loading: loading }">
         <a
           v-for="(item, index) in folders"
           :key="index"
@@ -106,7 +112,7 @@ defineExpose({
           <span class="status-point"></span>
         </a>
 
-        <div class="tips">
+        <div v-show="!loading" class="tips">
           <span v-if="folders.length != 0">{{ folders.length }} folders</span>
           <span v-if="github_config?.owner && folders.length == 0"
             >暂无文件夹
@@ -114,6 +120,7 @@ defineExpose({
           <span v-if="!github_config?.owner">未授权</span>
         </div>
         <lew-button
+          v-show="!loading"
           v-if="github_config?.owner && folders.length == 0"
           style="margin-top: 10px"
           type="primary"
@@ -211,6 +218,7 @@ defineExpose({
     }
   }
   .folder {
+    position: relative;
     margin-top: 70px;
     padding-bottom: calc(45px * 4 + 38px);
     background: var(--background);
@@ -269,6 +277,33 @@ defineExpose({
     .item:last-child:hover {
       color: var(--text-color-2);
       background: none;
+    }
+  }
+  .folder::after {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    content: '';
+    border: 4px solid rgba(194, 194, 194, 0.4);
+    border-left-color: var(--primary-color);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+    animation: donut-spin 0.8s linear infinite;
+    transition: all 0.15s;
+    transform: translate(-50%, -50%);
+  }
+
+  .loading::after {
+    opacity: 1;
+  }
+  @keyframes donut-spin {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
     }
   }
   .handle-box {
