@@ -112,15 +112,15 @@ defineExpose({
             >暂无文件夹
           </span>
           <span v-if="!github_config?.owner">未授权</span>
-          <lew-button
-            v-if="github_config?.owner && folders.length == 0"
-            style="margin-top: 10px"
-            type="primary"
-            @click="isOpenFolderModal = !isOpenFolderModal"
-          >
-            立即创建
-          </lew-button>
         </div>
+        <lew-button
+          v-if="github_config?.owner && folders.length == 0"
+          style="margin-top: 10px"
+          type="primary"
+          @click="isOpenFolderModal = !isOpenFolderModal"
+        >
+          立即创建
+        </lew-button>
       </div>
 
       <!-- 操作栏 -->

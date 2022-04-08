@@ -117,7 +117,7 @@ const changeDarkModel = (e) => {
 
 <template>
   <div class="form">
-    <div v-if="!user.name" class="title">开始</div>
+    <div v-if="!user.name" class="title-1">开始</div>
     <div v-show="user.name" class="user-info">
       <img class="avatar" :src="user.avatarUrl" alt="" srcset="" />
       <div class="name">{{ user.name }}</div>
@@ -189,7 +189,7 @@ const changeDarkModel = (e) => {
   width: 400px;
   margin: 0px auto;
 }
-.title {
+.title-1 {
   margin-top: 120px;
   margin-bottom: 20px;
   color: var(--text-color-1);
