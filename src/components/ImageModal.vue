@@ -33,7 +33,7 @@ watch(
 watch(
   () => folder.value,
   (n: any) => {
-    router.push(`?folder=${n}`)
+    router.push(`/?folder=${n}`)
   }
 )
 
