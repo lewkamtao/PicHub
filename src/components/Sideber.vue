@@ -95,7 +95,6 @@ defineExpose({
       </div>
       <!-- 文件夹列表 -->
       <div class="folder">
-        <div v-if="folders.length > 0" class="title-3">文件夹</div>
         <a
           v-for="(item, index) in folders"
           :key="index"
@@ -107,12 +106,20 @@ defineExpose({
           <span class="status-point"></span>
         </a>
 
-        <div class="item">
+        <div class="tips">
           <span v-if="folders.length != 0">{{ folders.length }} folders</span>
           <span v-if="github_config?.owner && folders.length == 0"
-            >暂无文件夹</span
-          >
+            >暂无文件夹
+          </span>
           <span v-if="!github_config?.owner">未授权</span>
+          <lew-button
+            v-if="github_config?.owner && folders.length == 0"
+            style="margin-top: 10px"
+            type="primary"
+            @click="isOpenFolderModal = !isOpenFolderModal"
+          >
+            立即创建
+          </lew-button>
         </div>
       </div>
 
@@ -193,7 +200,7 @@ defineExpose({
       font-size: 26px;
       font-weight: bolder;
       color: var(--text-color);
-
+      margin-left: 5px;
       span {
         background: var(--primary-color);
         color: #fff;
@@ -208,11 +215,17 @@ defineExpose({
     padding-bottom: calc(45px * 4 + 38px);
     background: var(--background);
     min-height: calc(100vh - 400px);
-    padding: 7px;
+    padding: 14px 7px;
     box-sizing: border-box;
-    .title-3 {
-      font-weight: bold;
-      padding: 14px;
+    .tips {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      flex-direction: column;
+      padding: 20px;
+      color: var(--text-color-2);
+      opacity: 0.7;
     }
     .item {
       position: relative;

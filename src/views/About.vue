@@ -10,7 +10,7 @@ import { ref } from 'vue'
         Kamtao</a
       >。 我每天在 Left 广告初创公司构建大量前端、用户界面和
       API。到了周末，我会做很多有意思的项目。除了
-      PicHUb，我还创建了一个有意思的论坛（<a
+      PicHub，我还创建了一个有意思的论坛（<a
         target="_blank"
         href="https://fish.tngeek.com"
       >
@@ -34,6 +34,14 @@ import { ref } from 'vue'
         <li>封装组件（按钮表单上传等）</li>
         <li>复制转换 Markdown 格式</li>
       </ul>
+      <br />
+      <div>
+        开源地址：
+        <a target="_blank" href="https://github.com/lewkamtao/PicHub"
+          >https://github.com/lewkamtao/PicHub</a
+        >
+      </div>
+      <div>欢迎提建议和bug，喜欢的话点个star！</div>
     </div>
   </div>
 </template>

@@ -28,6 +28,15 @@ watch(
     folder.value = n.folder || ''
   }
 )
+
+// 监听路由变化 改变 需要上传文件夹
+watch(
+  () => folder.value,
+  (n: any) => {
+    router.push(`?folder=${n}`)
+  }
+)
+
 // 获取github配置
 let github_config: GithubConfig = JSON.parse(
   localStorage.getItem('github_config') as any
@@ -633,7 +642,7 @@ const GetCdnText = (url) => {
       .status-box {
         position: absolute;
         top: 5px;
-        right: 5px;
+        right: 10px;
         .icon {
           width: 14px;
           height: 14px;

@@ -76,8 +76,10 @@ function GetFileSize(size) {
   var num = 1024.0 //byte
   if (size < num) return size + ' b'
   if (size < Math.pow(num, 2)) return (size / num).toFixed(2) + ' KB' //kb
-  if (size < Math.pow(num, 3)) return (size / Math.pow(num, 2)).toFixed(2) + ' M' //M
-  if (size < Math.pow(num, 4)) return (size / Math.pow(num, 3)).toFixed(2) + ' G' //G
+  if (size < Math.pow(num, 3))
+    return (size / Math.pow(num, 2)).toFixed(2) + ' M' //M
+  if (size < Math.pow(num, 4))
+    return (size / Math.pow(num, 3)).toFixed(2) + ' G' //G
   return (size / Math.pow(num, 4)).toFixed(2) + ' T' //T
 }
 
@@ -109,7 +111,9 @@ function FormatZhByMessage(text) {
     case text.indexOf("wasn't supplied") >= 0: {
       return '请勿重复上传相同内容'
     }
-
+    case text == 'This repository is empty.': {
+      return '当前仓库为空，请新建一个文件夹'
+    }
     case text == 'path cannot start with a slash': {
       return '名称不能为空'
     }

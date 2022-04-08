@@ -383,6 +383,7 @@ defineExpose({
     color: var(--text-color-2);
     border-top: var(--border-width) var(--border-color) solid;
     background: var(--background);
+    opacity: 0.7;
   }
   .not-found {
     position: absolute;
@@ -399,6 +400,7 @@ defineExpose({
     }
     .message {
       font-size: 16px;
+      margin-bottom: 55px;
     }
   }
 }

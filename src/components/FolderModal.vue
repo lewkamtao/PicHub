@@ -57,8 +57,8 @@ const AddForder = () => {
 
 <template>
   <div class="folder-modal" :class="{ isOpen: props.isOpen }">
-    <lew-form-item title="文件名">
-      <lew-input v-model="forderName" placeholder="请输入"></lew-input>
+    <lew-form-item title="新建文件夹">
+      <lew-input v-model="forderName" placeholder="输入文件夹名称"></lew-input>
     </lew-form-item>
     <div class="form-item btn-box">
       <lew-button @click="AddForder()" type="primary" :loading="loading">
