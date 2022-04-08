@@ -238,6 +238,7 @@ const addHistory = (e: any) => {
     folder: e.folder,
     status: e.status,
     ext: e.ext,
+    download_url: e.download_url,
   }
   history_list.value.unshift(item)
 }
