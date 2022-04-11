@@ -490,7 +490,7 @@ const GetCdnText = (url) => {
             }}</span>
  
             <span
-              v-if="item.download_url"
+              v-if="item.cdn_url"
               v-bind:data-clipboard-text="GetMarkdownText(item.cdn_url)"
               @click="CopyText()"
               class="tag copy-btn"
@@ -498,7 +498,7 @@ const GetCdnText = (url) => {
             >
 
             <span
-              v-if="item.download_url"
+              v-if="item.cdn_url"
               v-bind:data-clipboard-text="GetCdnText(item.cdn_url)"
               @click="CopyText()"
               class="tag copy-btn"
