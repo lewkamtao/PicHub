@@ -15,4 +15,5 @@ export interface UploadImage {
   html_url: string
   sha: string
   url: string
+  cdn_url: string
 }
