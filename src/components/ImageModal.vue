@@ -204,7 +204,7 @@ const Upload = async (type) => {
               upload_list.value[i].status = 'success'
               e.url = image.url
               e.download_url = image.download_url
-              e.cdn_url = `https://cdn.jsdelivr.net/gh/${github_config.owner}/${github_config.repoPath}@master/${folder}/${e.name}`
+              e.cdn_url = `https://cdn.jsdelivr.net/gh/${github_config.owner}/${github_config.repoPath}@master/${folder.value}/${filename}`
               e.git_url = image.git_url
               e.sha = image.sha
               e.upload_type = type
