@@ -204,6 +204,7 @@ const Upload = async (type) => {
               upload_list.value[i].status = 'success'
               e.url = image.url
               e.download_url = image.download_url
+              e.cdn_url = `https://cdn.jsdelivr.net/gh/${github_config.owner}/${github_config.repoPath}@master/${folder}/${e.name}`
               e.git_url = image.git_url
               e.sha = image.sha
               e.upload_type = type
@@ -240,7 +241,7 @@ const addHistory = (e: any) => {
     folder: e.folder,
     status: e.status,
     ext: e.ext,
-    download_url: e.download_url,
+    cdn_url: e.cdn_url,
   }
   history_list.value.unshift(item)
 }
@@ -487,10 +488,10 @@ const GetCdnText = (url) => {
             <span class="tag compress-size">{{
               GetFileSize(item.compress_size)
             }}</span>
-
+ 
             <span
               v-if="item.download_url"
-              v-bind:data-clipboard-text="GetMarkdownText(item.download_url)"
+              v-bind:data-clipboard-text="GetMarkdownText(item.cdn_url)"
               @click="CopyText()"
               class="tag copy-btn"
               >markdown</span
@@ -498,7 +499,7 @@ const GetCdnText = (url) => {
 
             <span
               v-if="item.download_url"
-              v-bind:data-clipboard-text="GetCdnText(item.download_url)"
+              v-bind:data-clipboard-text="GetCdnText(item.cdn_url)"
               @click="CopyText()"
               class="tag copy-btn"
               >cdn</span

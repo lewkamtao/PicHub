@@ -50,7 +50,7 @@ const GetImages = (folderPath) => {
       emit('SetLoading', false)
       res.data.forEach((e) => {
         if (e.download_url) {
-          e.download_url = `https://cdn.jsdelivr.net/gh/${github_config.owner}/${github_config.repoPath}@master/${folderPath}/${e.name}`
+          e.cdn_url = `https://cdn.jsdelivr.net/gh/${github_config.owner}/${github_config.repoPath}@master/${folderPath}/${e.name}`
         }
       })
 
@@ -189,10 +189,10 @@ defineExpose({
         <a
           class="image"
           :data-info="FormatWImageInfo(item)"
-          :href="item.download_url"
+          :href="item.cdn_url"
           data-fancybox="gallery"
         >
-          <img :src="item.download_url" loading="lazy"
+          <img :src="item.cdn_url" loading="lazy"
         /></a>
         <div class="info">
           <div class="name">{{ item.name }}</div>
@@ -200,12 +200,12 @@ defineExpose({
           <div class="copy-box">
             <span
               class="copy-btn"
-              v-bind:data-clipboard-text="GetMarkdownText(item.download_url)"
+              v-bind:data-clipboard-text="GetMarkdownText(item.cdn_url)"
               @click="CopyText()"
               >markdown</span
             ><span
               class="copy-btn"
-              v-bind:data-clipboard-text="GetCdnText(item.download_url)"
+              v-bind:data-clipboard-text="GetCdnText(item.cdn_url)"
               @click="CopyText()"
               >cdn</span
             >
