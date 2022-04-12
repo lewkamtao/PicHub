@@ -33,9 +33,9 @@ let token = ref('' as any)
 let loading_1 = ref(false)
 let loading_2 = ref(false)
 let loading_3 = ref(false)
+let loading_4 = ref(false)
 
 const GetUser = () => {
-  loading_1.value = true
   axios
     .get({
       url: `/user`,
@@ -49,6 +49,7 @@ const GetUser = () => {
     })
     .catch(() => {
       loading_1.value = false
+      loading_4.value = false
     })
 }
 
@@ -65,6 +66,14 @@ const GetRepos = () => {
     .then((res: any) => {
       repos.value = res.data
       loading_1.value = false
+
+      if (
+        !user.value.repoId &&
+        token.value == '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'
+      ) {
+        user.value.repoId = 480610843
+        Save()
+      }
     })
 }
 
@@ -131,7 +140,7 @@ const changeDarkModel = (e) => {
           repos.length == 0
             ? `注意： <br />Pichub不会对你的 access token
           进行储存和转移，它只会储存在你的本机的浏览器内，所以它是相对安全的。如果你试图去浏览器的缓存中清除掉它，你会发现，它需要重新登陆了，但我们不推荐这样操作。
-        `
+         `
             : ''
         "
       >
@@ -141,6 +150,7 @@ const changeDarkModel = (e) => {
           placeholder="请输入"
         ></lew-input>
       </lew-form-item>
+
       <lew-form-item v-show="repos.length > 0" title="选择一个 Github 仓库">
         <lew-select
           v-model="user.repoId"
@@ -158,12 +168,23 @@ const changeDarkModel = (e) => {
     <lew-button
       type="primary"
       v-show="repos.length == 0"
-      @click="SetToken()"
+      @click=";(loading_1 = true), SetToken()"
       :loading="loading_1"
     >
       确定
     </lew-button>
-
+    <lew-button
+      type="gray"
+      v-show="repos.length == 0"
+      @click="
+        ;((loading_4 = true),
+        (token = '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')),
+          SetToken()
+      "
+      :loading="loading_4"
+    >
+      少废话，先看东西。
+    </lew-button>
     <lew-button
       type="primary"
       v-show="repos.length > 0"
@@ -215,5 +236,14 @@ const changeDarkModel = (e) => {
     margin-left: 10px;
     color: var(--text-color);
   }
+}
+
+.token-demo {
+  width: 100%;
+  background-color: rgb(243, 255, 245);
+  border-radius: 14px;
+  margin-bottom: 20px;
+  padding: 15px;
+  line-height: 30px;
 }
 </style>

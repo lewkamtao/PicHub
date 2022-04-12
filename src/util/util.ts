@@ -117,8 +117,8 @@ function FormatZhByMessage(text) {
     case text == 'path cannot start with a slash': {
       return '名称不能为空'
     }
-    case text == 'Bad credentials': {
-      return '未知错误'
+    case text == 'Requires authentication': {
+      return 'access token 错误'
     }
     case text == 'Bad credentials': {
       return '未知错误'

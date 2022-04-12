@@ -60,7 +60,9 @@ const props = defineProps({
   background-color: var(--danger-color);
   color: var(--invert-text-color);
 }
-
+.button-gray {
+  background-color: var(--gray-color);
+}
 .button-primary {
   background-color: var(--primary-color);
   color: var(--invert-text-color);
@@ -85,7 +87,9 @@ const props = defineProps({
   background-color: var(--primary-color-2);
   color: var(--invert-text-color);
 }
-
+.button-gray:hover {
+  background-color: var(--gray-color-2);
+}
 .button::after {
   position: absolute;
   top: 50%;
