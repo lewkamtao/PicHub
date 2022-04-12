@@ -69,7 +69,7 @@ const GetRepos = () => {
 
       if (
         !user.value.repoId &&
-        token.value == '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'
+        token.value == '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'
       ) {
         user.value.repoId = 480610843
         Save()
@@ -178,7 +178,7 @@ const changeDarkModel = (e) => {
       v-show="repos.length == 0"
       @click="
         ;((loading_4 = true),
-        (token = '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')),
+        (token = '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')),
           SetToken()
       "
       :loading="loading_4"
