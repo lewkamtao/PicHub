@@ -46,7 +46,7 @@ npm run build
 
 ## 反馈
 
-安装和使用过程中，如果遇到问题，请提 [Issue](https://github.com/lewkamtao/geek-blog/issues) 。
+安装和使用过程中，如果遇到问题，请提 [Issue](https://github.com/lewkamtao/PicHub/issues) 。
 
 ## 贡献
 
