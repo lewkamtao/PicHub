@@ -50,7 +50,7 @@ const GetImages = (folderPath) => {
       emit('SetLoading', false)
       res.data.forEach((e) => {
         if (e.download_url) {
-          e.cdn_url = `https://cdn.jsdelivr.net/gh/${github_config.owner}/${github_config.repoPath}@master/${folderPath}/${e.name}`
+          e.cdn_url = `https://git.pink/${github_config.owner}/${github_config.repoPath}/blob/main/${folderPath}/${e.name}?raw=true`
         }
       })
 
