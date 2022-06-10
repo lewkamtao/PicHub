@@ -204,7 +204,7 @@ const Upload = async (type) => {
               upload_list.value[i].status = 'success'
               e.url = image.url
               e.download_url = image.download_url
-              e.cdn_url = `https://git.pink/${github_config.owner}/${github_config.repoPath}/blob/main/${folder.value}/${filename}?raw=true`
+              e.cdn_url = `https://cdn.jsdelivr.net/gh/${github_config.owner}/${github_config.repoPath}@master/${folder.value}/${filename}`
               e.git_url = image.git_url
               e.sha = image.sha
               e.upload_type = type
@@ -488,7 +488,7 @@ const GetCdnText = (url) => {
             <span class="tag compress-size">{{
               GetFileSize(item.compress_size)
             }}</span>
- 
+
             <span
               v-if="item.cdn_url"
               v-bind:data-clipboard-text="GetMarkdownText(item.cdn_url)"
