@@ -50,7 +50,7 @@ const GetImages = (folderPath) => {
       emit('SetLoading', false)
       res.data.forEach((e) => {
         if (e.download_url) {
-          e.cdn_url = `https://git.poker/${github_config.owner}/${github_config.repoPath}/blob/main/${folderPath}/${e.name}?raw=true`
+          e.cdn_url = `http://git.poker/${github_config.owner}/${github_config.repoPath}/blob/main/${folderPath}/${e.name}?raw=true`
         }
       })
 
