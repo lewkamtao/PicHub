@@ -488,7 +488,7 @@ const GetCdnText = (url) => {
             <span class="tag compress-size">{{
               GetFileSize(item.compress_size)
             }}</span>
- 
+
             <span
               v-if="item.cdn_url"
               v-bind:data-clipboard-text="GetMarkdownText(item.cdn_url)"
